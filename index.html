@@ -3,7 +3,18 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>RentMate Ghana</title>
+<title>RentMate Ghana — Find Rooms &amp; Apartments Across Ghana</title>
+<meta name="description" content="Find affordable rooms, apartments and houses for rent across all 16 regions of Ghana. No agent fees, no commission. Direct WhatsApp contact with landlords."/>
+<meta name="keywords" content="rooms for rent Ghana, apartments Accra, house rent Kumasi, Ghana rental listings, cheap rooms Ghana, self contain Ghana"/>
+<meta name="robots" content="index, follow"/>
+<meta property="og:title" content="RentMate Ghana — Find Rooms &amp; Apartments"/>
+<meta property="og:description" content="Ghana's zero-commission rental platform. Browse verified listings across all 16 regions. No middlemen, no fees."/>
+<meta property="og:type" content="website"/>
+<meta property="og:url" content="https://ja-creates.github.io/rentmate-ghana"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="RentMate Ghana"/>
+<meta name="twitter:description" content="Find affordable rentals across all 16 regions of Ghana. Zero commission."/>
+<link rel="canonical" href="https://ja-creates.github.io/rentmate-ghana"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
@@ -644,6 +655,74 @@ input,select,textarea{font-family:'Outfit',sans-serif}
 .metric-val.green{color:#4cde85}
 .metric-val.red{color:#e74c3c}
 
+
+/* ── AUTH MODAL ── */
+.modal-overlay{position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.75);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;pointer-events:none;transition:opacity .3s}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal-box{background:var(--obsidian-2);border:1px solid rgba(201,168,76,.18);padding:48px 40px;width:100%;max-width:420px;position:relative}
+@media(max-width:480px){.modal-box{padding:32px 24px}}
+.modal-close{position:absolute;top:16px;right:16px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--smoke);cursor:pointer;transition:color .2s}
+.modal-close:hover{color:var(--white)}
+.modal-tabs{display:flex;gap:2px;margin-bottom:32px;border-bottom:1px solid rgba(201,168,76,.1)}
+.modal-tab{padding:10px 20px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--smoke);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .2s}
+.modal-tab.active{color:var(--gold);border-bottom-color:var(--gold)}
+.modal-form{display:flex;flex-direction:column;gap:16px}
+.modal-input{height:46px;padding:0 14px;background:var(--obsidian-3);border:1px solid rgba(201,168,76,.14);color:var(--pearl);font-size:14px;border-radius:3px;transition:border-color .2s;font-family:'Outfit',sans-serif}
+.modal-input:focus{outline:none;border-color:var(--gold)}
+.modal-input::placeholder{color:var(--obsidian-5)}
+.modal-textarea{padding:12px 14px;background:var(--obsidian-3);border:1px solid rgba(201,168,76,.14);color:var(--pearl);font-size:14px;border-radius:3px;transition:border-color .2s;font-family:'Outfit',sans-serif;resize:vertical;min-height:80px}
+.modal-textarea:focus{outline:none;border-color:var(--gold)}
+.modal-btn{height:46px;background:var(--gold);color:var(--obsidian);font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;border-radius:3px;border:1px solid var(--gold);transition:all .25s;cursor:pointer;font-family:'Outfit',sans-serif}
+.modal-btn:hover{background:var(--gold-light)}
+.modal-btn:disabled{opacity:.5;cursor:not-allowed}
+.modal-err{font-size:12px;color:#e74c3c;text-align:center;min-height:16px}
+.modal-switch{font-size:12px;color:var(--smoke);text-align:center;cursor:pointer}
+.modal-switch span{color:var(--gold);text-decoration:underline}
+.modal-h{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:600;color:var(--white);margin-bottom:6px}
+.modal-sub{font-size:13px;color:var(--smoke);margin-bottom:28px}
+.modal-avatar-wrap{display:flex;align-items:center;gap:14px;margin-bottom:4px}
+.modal-avatar{width:48px;height:48px;border-radius:50%;object-fit:cover;border:1px solid rgba(201,168,76,.2)}
+.modal-avatar-btn{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);cursor:pointer;border:1px solid rgba(201,168,76,.2);padding:6px 12px;border-radius:3px;background:transparent;font-family:'Outfit',sans-serif;transition:all .2s}
+.modal-avatar-btn:hover{border-color:var(--gold);background:rgba(201,168,76,.06)}
+
+/* ── NAV AUTH BUTTON ── */
+.nav-auth-btn{display:flex;align-items:center;gap:8px;padding:7px 16px;border:1px solid rgba(201,168,76,.3);border-radius:4px;font-size:12px;color:var(--mist);cursor:pointer;transition:all .2s;background:transparent;font-family:'Outfit',sans-serif}
+.nav-auth-btn:hover{border-color:var(--gold);color:var(--gold)}
+.nav-auth-avatar{width:24px;height:24px;border-radius:50%;object-fit:cover;border:1px solid rgba(201,168,76,.3)}
+
+/* ── LANDLORD PROFILE VIEW ── */
+.profile-hero{background:var(--obsidian-2);border-bottom:1px solid rgba(201,168,76,.1);padding:64px 0 48px}
+.profile-avatar-lg{width:96px;height:96px;border-radius:50%;object-fit:cover;border:2px solid rgba(201,168,76,.3);margin-bottom:20px}
+.profile-name{font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:600;color:var(--white);margin-bottom:6px}
+.profile-bio{font-size:14px;color:var(--smoke);line-height:1.7;max-width:500px;margin-bottom:20px}
+.profile-meta{display:flex;flex-wrap:wrap;gap:16px}
+.profile-meta-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--smoke)}
+.profile-meta-item svg{width:13px;height:13px;color:var(--gold)}
+
+/* ── LANDLORD DASHBOARD ── */
+.dash-wrap{max-width:900px;margin:0 auto}
+.dash-head{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:32px}
+.dash-listing-row{background:var(--obsidian-2);border:1px solid rgba(201,168,76,.08);display:flex;gap:14px;align-items:center;padding:14px 18px;margin-bottom:8px;transition:background .2s}
+.dash-listing-row:hover{background:var(--obsidian-3)}
+.dash-listing-img{width:64px;height:48px;object-fit:cover;border-radius:2px;flex-shrink:0}
+.dash-listing-title{font-size:14px;color:var(--white);font-weight:500;margin-bottom:4px}
+.dash-listing-meta{font-size:12px;color:var(--smoke)}
+.dash-listing-actions{margin-left:auto;display:flex;gap:8px;flex-shrink:0}
+.dash-btn{padding:6px 14px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;border-radius:3px;cursor:pointer;font-family:'Outfit',sans-serif;transition:all .2s}
+.dash-btn-edit{background:transparent;border:1px solid rgba(201,168,76,.3);color:var(--gold)}
+.dash-btn-edit:hover{background:rgba(201,168,76,.08)}
+.dash-btn-del{background:transparent;border:1px solid rgba(192,57,43,.3);color:var(--danger)}
+.dash-btn-del:hover{background:rgba(192,57,43,.08)}
+.dash-status{font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;border-radius:2px;font-weight:600}
+.dash-status-pending{background:rgba(201,168,76,.12);color:var(--gold)}
+.dash-status-live{background:rgba(26,107,58,.2);color:#4cde85}
+.dash-status-rejected{background:rgba(192,57,43,.12);color:#e74c3c}
+
+/* ── EDIT LISTING MODAL ── */
+.edit-modal-overlay{position:fixed;inset:0;z-index:2001;background:rgba(0,0,0,.8);backdrop-filter:blur(8px);display:flex;align-items:flex-start;justify-content:center;padding:80px 24px 24px;overflow-y:auto;opacity:0;pointer-events:none;transition:opacity .3s}
+.edit-modal-overlay.open{opacity:1;pointer-events:all}
+.edit-modal-box{background:var(--obsidian-2);border:1px solid rgba(201,168,76,.18);padding:40px;width:100%;max-width:680px;position:relative}
+
 /* TOAST */
 #toast-root{position:fixed;bottom:100px;right:28px;z-index:9998;display:flex;flex-direction:column;gap:8px;align-items:flex-end;pointer-events:none}
 .toast{
@@ -690,7 +769,20 @@ input,select,textarea{font-family:'Outfit',sans-serif}
       <div class="nav-links">
         <span class="nav-link" onclick="uNav('listings')">Browse</span>
         <span class="nav-link" onclick="uNav('submit')">List Property</span>
-        <button class="nav-cta" onclick="uNav('submit')">Post Free Ad</button>
+        <div id="nav-auth-wrap" style="display:flex;align-items:center;gap:8px">
+          <button class="nav-auth-btn" id="nav-login-btn" onclick="openAuthModal()" style="display:flex">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:14px;height:14px"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            Sign In
+          </button>
+          <div id="nav-user-wrap" style="display:none;align-items:center;gap:8px">
+            <button class="nav-auth-btn" onclick="uNav('dashboard')" style="gap:8px">
+              <img class="nav-auth-avatar" id="nav-avatar" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='12' fill='%232a2a2a'/%3E%3C/svg%3E" alt=""/>
+              <span id="nav-username">My Listings</span>
+            </button>
+            <button class="nav-auth-btn" onclick="doLogout()" style="padding:7px 12px;font-size:11px">Sign Out</button>
+          </div>
+          <button class="nav-cta" onclick="uNav('submit')">Post Free Ad</button>
+        </div>
       </div>
       <div class="hamburger" onclick="toggleMobile()" id="hbg">
         <span></span><span></span><span></span>
@@ -704,6 +796,9 @@ input,select,textarea{font-family:'Outfit',sans-serif}
     <span class="mobile-nav-link" onclick="uNav('home');toggleMobile()">Home</span>
     <span class="mobile-nav-link" onclick="uNav('listings');toggleMobile()">Browse</span>
     <span class="mobile-nav-link" onclick="uNav('submit');toggleMobile()">List Property</span>
+    <span class="mobile-nav-link" id="mob-signin" onclick="openAuthModal();toggleMobile()">Sign In</span>
+    <span class="mobile-nav-link" id="mob-dashboard" onclick="uNav('dashboard');toggleMobile()" style="display:none">My Listings</span>
+    <span class="mobile-nav-link" id="mob-signout" onclick="doLogout();toggleMobile()" style="display:none;font-size:24px;color:var(--smoke)">Sign Out</span>
   </div>
 
   <!-- HOME VIEW -->
@@ -1042,6 +1137,57 @@ input,select,textarea{font-family:'Outfit',sans-serif}
     </div>
   </div>
 
+  <!-- LANDLORD PROFILE VIEW -->
+  <div class="view" id="view-profile">
+    <div style="padding-top:72px">
+      <div class="profile-hero">
+        <div class="container">
+          <button class="detail-back" onclick="uNav('listings')" style="margin-bottom:32px">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            Back
+          </button>
+          <div id="profile-content"></div>
+        </div>
+      </div>
+      <section class="section" style="padding-top:56px">
+        <div class="container">
+          <div class="section-eyebrow">Listings</div>
+          <h2 class="section-h2" style="font-size:2rem;margin-bottom:32px">Properties by this Landlord</h2>
+          <div class="listing-grid" id="profile-listings-grid"></div>
+          <div id="profile-no-listings" style="display:none;text-align:center;padding:64px 20px;color:var(--smoke);font-size:14px">No approved listings yet.</div>
+        </div>
+      </section>
+      <footer class="footer"><div class="container"><div class="footer-bottom"><span class="footer-copy">© 2025 RentMate Ghana</span></div></div></footer>
+    </div>
+  </div>
+
+  <!-- LANDLORD DASHBOARD VIEW -->
+  <div class="view" id="view-dashboard">
+    <div style="padding-top:72px">
+      <section class="section" style="padding-top:56px">
+        <div class="container">
+          <div class="dash-wrap">
+            <div class="dash-head">
+              <div>
+                <div class="section-eyebrow">My Account</div>
+                <h2 class="section-h2" style="font-size:2rem;margin-bottom:0">My Listings</h2>
+              </div>
+              <button class="btn-gold" onclick="uNav('submit')">+ Post New Listing</button>
+            </div>
+            <div id="dash-listings"></div>
+            <div id="dash-empty" style="display:none;text-align:center;padding:64px 20px;border:1px solid rgba(201,168,76,.08)">
+              <p style="font-family:'Cormorant Garamond',serif;font-size:1.6rem;color:var(--pearl);margin-bottom:12px">No listings yet</p>
+              <p style="font-size:13px;color:var(--smoke);margin-bottom:24px">Post your first property — it is free and takes 2 minutes.</p>
+              <button class="btn-gold" onclick="uNav('submit')">Post a Listing</button>
+            </div>
+          </div>
+        </div>
+      </section>
+      <footer class="footer"><div class="container"><div class="footer-bottom"><span class="footer-copy">© 2025 RentMate Ghana</span></div></div></footer>
+    </div>
+  </div>
+
+
 </div><!-- /user-site -->
 
 <!-- ══════════════════════════════════════════════════════
@@ -1115,10 +1261,69 @@ input,select,textarea{font-family:'Outfit',sans-serif}
   </div>
 </div><!-- /admin-site -->
 
+
+<!-- AUTH MODAL -->
+<div class="modal-overlay" id="auth-modal">
+  <div class="modal-box">
+    <span class="modal-close" onclick="closeAuthModal()">✕</span>
+    <div class="modal-tabs">
+      <div class="modal-tab active" id="tab-login" onclick="switchAuthTab('login')">Sign In</div>
+      <div class="modal-tab" id="tab-signup" onclick="switchAuthTab('signup')">Create Account</div>
+    </div>
+    <!-- Login Form -->
+    <div id="auth-login-form">
+      <h3 class="modal-h">Welcome back</h3>
+      <p class="modal-sub">Sign in to manage your listings</p>
+      <div class="modal-form">
+        <input class="modal-input" id="li-email" type="email" placeholder="Email address"/>
+        <input class="modal-input" id="li-pw" type="password" placeholder="Password"/>
+        <div class="modal-err" id="li-err"></div>
+        <button class="modal-btn" id="li-btn" onclick="doLogin()">Sign In</button>
+        <p class="modal-switch">No account? <span onclick="switchAuthTab('signup')">Create one free</span></p>
+      </div>
+    </div>
+    <!-- Signup Form -->
+    <div id="auth-signup-form" style="display:none">
+      <h3 class="modal-h">Join RentMate</h3>
+      <p class="modal-sub">Create your landlord account</p>
+      <div class="modal-form">
+        <input class="modal-input" id="su-name" type="text" placeholder="Full name"/>
+        <input class="modal-input" id="su-email" type="email" placeholder="Email address"/>
+        <input class="modal-input" id="su-phone" type="tel" placeholder="WhatsApp number (0XXXXXXXXX)"/>
+        <input class="modal-input" id="su-pw" type="password" placeholder="Password (min 6 characters)"/>
+        <textarea class="modal-textarea" id="su-bio" placeholder="Short bio — e.g. Landlord in Accra with 5 properties. Fast response." rows="2"></textarea>
+        <div class="modal-avatar-wrap">
+          <img class="modal-avatar" id="su-avatar-preview" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='20' fill='%232a2a2a'/%3E%3Ccircle cx='20' cy='16' r='7' fill='%23535353'/%3E%3Cellipse cx='20' cy='34' rx='12' ry='8' fill='%23535353'/%3E%3C/svg%3E" alt="avatar"/>
+          <div>
+            <div style="font-size:12px;color:var(--smoke);margin-bottom:6px">Profile photo (optional)</div>
+            <label class="modal-avatar-btn">Upload Photo<input type="file" accept="image/*" style="display:none" onchange="previewAvatar(this)"/></label>
+          </div>
+        </div>
+        <div class="modal-err" id="su-err"></div>
+        <button class="modal-btn" id="su-btn" onclick="doSignup()">Create Account</button>
+        <p class="modal-switch">Already have an account? <span onclick="switchAuthTab('login')">Sign in</span></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT LISTING MODAL -->
+<div class="edit-modal-overlay" id="edit-modal">
+  <div class="edit-modal-box">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:28px">
+      <h3 style="font-family:'Cormorant Garamond',serif;font-size:1.6rem;color:var(--white);font-weight:600">Edit Listing</h3>
+      <span class="modal-close" style="position:static" onclick="closeEditModal()">✕</span>
+    </div>
+    <div id="edit-form-inner"></div>
+  </div>
+</div>
+
 <!-- Firebase -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
-import { getFirestore, collection, addDoc, doc, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, doc, updateDoc, deleteDoc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-storage.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDtGDgWZpwSV2QJRpZnlUzU-Om_TL0skbk",
@@ -1129,51 +1334,78 @@ const firebaseConfig = {
   appId: "1:90496397369:web:159b8f54072a8a897b5de8"
 };
 
-const app = initializeApp(firebaseConfig);
-const db  = getFirestore(app);
+const app  = initializeApp(firebaseConfig);
+const db   = getFirestore(app);
+const auth = getAuth(app);
+const storage = getStorage(app);
 
-window._db        = db;
+// Expose to global scope
+window._db         = db;
+window._auth       = auth;
+window._storage    = storage;
 window._collection = collection;
-window._addDoc    = addDoc;
-window._doc       = doc;
-window._updateDoc = updateDoc;
-window._dbReady   = true;
+window._addDoc     = addDoc;
+window._doc        = doc;
+window._getDoc     = getDoc;
+window._updateDoc  = updateDoc;
+window._deleteDoc  = deleteDoc;
+window._ref        = ref;
+window._uploadBytes = uploadBytes;
+window._getDownloadURL = getDownloadURL;
+window._dbReady    = true;
+window._currentUser = null;
+window._avatarFile  = null;
+
+// ── AUTH STATE LISTENER ──
+onAuthStateChanged(auth, async (user) => {
+  window._currentUser = user;
+  if (user) {
+    // Load user profile from Firestore
+    try {
+      const snap = await getDoc(doc(db, 'users', user.uid));
+      if (snap.exists()) {
+        window._userProfile = snap.data();
+      } else {
+        window._userProfile = { name: user.displayName || user.email, email: user.email };
+      }
+    } catch(e) { window._userProfile = { name: user.email }; }
+    if (typeof updateNavAuth === 'function') updateNavAuth(true);
+    // Re-render dashboard if open
+    if (document.getElementById('view-dashboard')?.classList.contains('active')) {
+      if (typeof renderDashboard === 'function') renderDashboard();
+    }
+  } else {
+    window._userProfile = null;
+    if (typeof updateNavAuth === 'function') updateNavAuth(false);
+  }
+});
 
 // ── REAL-TIME LISTENER ──
-// Fires instantly whenever ANY listing is added, changed or deleted in Firestore
-// No refresh needed — site updates live for everyone
 function startRealtimeListener() {
   onSnapshot(collection(db, "listings"), (snapshot) => {
-    // Rebuild the Firebase portion of the listings array from scratch
     const fbIds = new Set();
     snapshot.forEach(d => {
       fbIds.add(d.id);
       const existing = window.listings.find(l => l._fbId === d.id);
       if (existing) {
-        // Update existing listing in place
         Object.assign(existing, d.data(), { _fbId: d.id });
       } else {
-        // New listing — add it
         window.listings.push({ ...d.data(), _fbId: d.id });
       }
     });
-    // Remove listings deleted from Firebase
     window.listings = window.listings.filter(l => !l._fbId || fbIds.has(l._fbId));
-
     console.log("Firebase sync: " + snapshot.size + " listings ✓");
-
-    // Re-render whatever view is currently active
     if (typeof renderFeatured === "function") renderFeatured();
     if (typeof renderListings === "function" &&
         document.getElementById("view-listings")?.classList.contains("active")) {
       renderListings();
     }
-    if (typeof refreshAdmin === "function" && window.adminIn) {
-      refreshAdmin();
+    if (typeof refreshAdmin === "function" && window.adminIn) refreshAdmin();
+    if (typeof renderDashboard === "function" &&
+        document.getElementById("view-dashboard")?.classList.contains("active")) {
+      renderDashboard();
     }
-  }, (err) => {
-    console.warn("Firebase listener error:", err.message);
-  });
+  }, (err) => { console.warn("Firebase listener error:", err.message); });
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -1221,6 +1453,12 @@ const IMGS = [
   "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=700&q=80",
   "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=700&q=80",
 ];
+
+// ── SECURITY: sanitize user input to prevent XSS ──
+function sanitize(str) {
+  if (typeof str !== 'string') return str;
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#x27;');
+}
 
 let listings = [
   {id:"L1",title:"Executive Studio — East Legon",region:"Greater Accra",city:"East Legon",landmark:"Near American House",price:2400,duration:"monthly",property_type:"Studio",description:"Prestigious studio apartment in the heart of East Legon. Italian marble floors, built-in wardrobes, high-speed fibre internet, 24/7 security with CCTV, dedicated parking. Water and estate maintenance included. Ideal for professionals.",images:[IMGS[0],IMGS[6],IMGS[9]],phone:"0551234567",is_approved:true,is_verified:true,created_at:"2025-01-10"},
@@ -1298,12 +1536,23 @@ function updateCityDropdown(cityId, regionId) {
 // NAVIGATION
 // ═══════════════════════════════════════════════
 function uNav(view, id) {
+  // Dashboard requires login
+  if (view === 'dashboard' && !window._currentUser) {
+    openAuthModal(); return;
+  }
   document.querySelectorAll('#user-site .view').forEach(v => v.classList.remove('active'));
-  document.getElementById('view-' + view).classList.add('active');
+  const el = document.getElementById('view-' + view);
+  if (!el) return;
+  el.classList.add('active');
   window.scrollTo({top:0,behavior:'smooth'});
-  if (view === 'home') setTimeout(renderFeatured, 500);
-  if (view === 'listings') renderListings();
-  if (view === 'detail' && id) renderDetail(id);
+  if (view === 'home')      { setTimeout(renderFeatured, 500); window.location.hash = ''; }
+  if (view === 'listings')  { renderListings(); setHash('listings'); }
+  if (view === 'detail' && id) {
+    renderDetail(id);
+    setHash('listing', id);
+  }
+  if (view === 'dashboard') { renderDashboard(); setHash('dashboard'); }
+  if (view === 'submit')    { setHash('submit'); }
 }
 
 function switchSite(s) {
@@ -1378,10 +1627,16 @@ function renderCard(l, i) {
         <span class="card-type-tag">${l.property_type}</span>
       </div>
       <div class="card-footer">
-        <div style="font-size:11px;color:var(--smoke);letter-spacing:.08em">${l.landmark ? l.landmark.slice(0,36) + (l.landmark.length > 36 ? '…' : '') : ''}</div>
-        <a href="${wa}" target="_blank" rel="noopener" class="btn-wa" onclick="event.stopPropagation()">
-          ${waIcon()} WhatsApp
-        </a>
+        <div style="font-size:11px;color:var(--smoke);letter-spacing:.08em">
+          ${l.landmark ? l.landmark.slice(0,28) + (l.landmark.length > 28 ? '…' : '') : ''}
+          ${l.created_at ? '<span style="color:var(--obsidian-5);margin-left:4px">' + (Math.floor((Date.now()-new Date(l.created_at))/(86400000)) < 1 ? 'Today' : Math.floor((Date.now()-new Date(l.created_at))/(86400000)) + 'd ago') + '</span>' : ''}
+        </div>
+        <div style="display:flex;gap:6px;align-items:center">
+          <a href="${wa}" target="_blank" rel="noopener" class="btn-wa" onclick="event.stopPropagation()">
+            ${waIcon()} WhatsApp
+          </a>
+          <button onclick="event.stopPropagation();reportListing('${l.id}')" title="Report listing" style="width:30px;height:30px;border-radius:3px;border:1px solid rgba(192,57,43,.3);color:var(--danger);display:flex;align-items:center;justify-content:center;background:transparent;font-size:14px;flex-shrink:0;transition:all .2s" onmouseover="this.style.background='rgba(192,57,43,.1)'" onmouseout="this.style.background='transparent'">⚑</button>
+        </div>
       </div>
     </div>
   </div>`;
@@ -1490,6 +1745,7 @@ function renderDetail(id) {
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
         ${l.city || l.location}, ${l.region}${l.landmark ? ' · ' + l.landmark : ''}
       </div>
+      ${l.uid ? `<div style="margin-bottom:20px"><button onclick="renderProfileView('${l.uid}')" style="display:inline-flex;align-items:center;gap:8px;font-size:12px;color:var(--gold);background:transparent;border:1px solid rgba(201,168,76,.2);padding:6px 14px;border-radius:3px;cursor:pointer;font-family:'Outfit',sans-serif;letter-spacing:.08em;text-transform:uppercase;transition:all .2s" onmouseover="this.style.background='rgba(201,168,76,.08)'" onmouseout="this.style.background='transparent'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:13px;height:13px"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>View Landlord Profile</button></div>` : ''}
       <div class="detail-chips">
         <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:13px;height:13px;color:var(--gold)"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>${l.property_type}</span>
         <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:13px;height:13px;color:var(--gold)"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>${l.duration}</span>
@@ -1512,6 +1768,10 @@ function renderDetail(id) {
         <div class="sidebar-divider"></div>
         <a href="${wa}" target="_blank" rel="noopener" class="btn-wa-big">${waIcon()} Contact on WhatsApp</a>
         <p class="sidebar-safety"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Always inspect the property in person before making any payment.</p>
+        <div style="display:flex;gap:8px;margin-top:16px">
+          <button onclick="shareListing('${l.id}')" style="flex:1;padding:10px;border:1px solid rgba(201,168,76,.2);border-radius:3px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);background:transparent;cursor:pointer;transition:all .2s" onmouseover="this.style.background='rgba(201,168,76,.08)'" onmouseout="this.style.background='transparent'">Share</button>
+          <button onclick="reportListing('${l.id}')" style="flex:1;padding:10px;border:1px solid rgba(192,57,43,.2);border-radius:3px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--danger);background:transparent;cursor:pointer;transition:all .2s" onmouseover="this.style.background='rgba(192,57,43,.08)'" onmouseout="this.style.background='transparent'">Report</button>
+        </div>
       </div>
     </div>
   </div>`;
@@ -1558,14 +1818,56 @@ function handleSubmit(e) {
   if (!/^0[0-9]{9}$/.test(phone)) {
     toast('Enter a valid Ghana number: 0XXXXXXXXX',true); return;
   }
+
+  // ── SPAM PROTECTION 1: duplicate phone check ──
+  // Prevent same number submitting multiple pending listings
+  const dupPending = listings.find(l => l.phone === phone && !l.is_approved && !l._rejected);
+  if (dupPending) {
+    toast('You already have a listing pending review. Please wait for approval.', true);
+    return;
+  }
+
+  // ── SPAM PROTECTION 2: rate limit by localStorage ──
+  // Max 3 submissions per 24 hours per browser
+  const RL_KEY = 'rm_submissions';
+  const RL_MAX = 3;
+  const RL_WINDOW = 24 * 60 * 60 * 1000;
+  try {
+    const stored = JSON.parse(localStorage.getItem(RL_KEY) || '[]');
+    const now = Date.now();
+    const recent = stored.filter(t => now - t < RL_WINDOW);
+    if (recent.length >= RL_MAX) {
+      toast('Too many submissions. Please try again after 24 hours.', true);
+      return;
+    }
+    recent.push(now);
+    localStorage.setItem(RL_KEY, JSON.stringify(recent));
+  } catch(err) { /* localStorage blocked — allow through */ }
+
+  // ── SPAM PROTECTION 3: basic content check ──
+  if (title.length < 10) { toast('Listing title is too short.', true); return; }
+  if (desc.length < 30)  { toast('Please write a more detailed description.', true); return; }
+  if (price < 50)        { toast('Price seems too low. Please enter monthly rent in GH₵.', true); return; }
   const btn = document.getElementById('sbmt-btn');
   btn.disabled = true;
   btn.innerHTML = `<svg style="width:16px;height:16px;animation:spin 1s linear infinite" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0"/></svg> Submitting...`;
   const newL = {
-    id:'L'+Date.now(), title, region, city, landmark:land, price, duration:dur,
-    property_type:type, description:desc,
+    id:'L'+Date.now(),
+    title: sanitize(title),
+    region: sanitize(region),
+    city: sanitize(city),
+    landmark: sanitize(land),
+    price, duration:dur,
+    property_type: sanitize(type),
+    description: sanitize(desc),
     images: selFiles.length ? selFiles.map((_,i) => IMGS[i % IMGS.length]) : [IMGS[Math.floor(Math.random()*IMGS.length)]],
-    phone, is_approved:false, is_verified:false, created_at:new Date().toISOString()
+    phone: sanitize(phone),
+    name: sanitize(name),
+    uid: window._currentUser ? window._currentUser.uid : null,
+    landlord_name: window._userProfile ? window._userProfile.name : sanitize(name),
+    is_approved:false, is_verified:false, _rejected:false,
+    created_at:new Date().toISOString(),
+    report_count: 0
   };
   (async () => {
     if (window._dbReady) {
@@ -1686,6 +1988,435 @@ function admAct(action, id) {
   refreshAdmin();
 }
 
+
+// ═══════════════════════════════════════════════
+// HASH ROUTING
+// ═══════════════════════════════════════════════
+function parseHash() {
+  const h = window.location.hash.replace('#','');
+  if (!h) return null;
+  const parts = h.split('/');
+  return { type: parts[0], id: parts[1] };
+}
+
+function setHash(type, id) {
+  window.location.hash = id ? type + '/' + id : type;
+}
+
+function handleHashChange() {
+  const route = parseHash();
+  if (!route) return;
+  if (route.type === 'listing' && route.id) {
+    // Find by _fbId or id
+    const l = listings.find(x => x._fbId === route.id || x.id === route.id);
+    if (l) { uNav('detail', l._fbId || l.id); return; }
+    // Not loaded yet — wait for Firebase sync then try again
+    setTimeout(() => {
+      const l2 = listings.find(x => x._fbId === route.id || x.id === route.id);
+      if (l2) uNav('detail', l2._fbId || l2.id);
+    }, 1500);
+  }
+  if (route.type === 'landlord' && route.id) {
+    renderProfileView(route.id);
+  }
+  if (route.type === 'listings') { uNav('listings'); }
+  if (route.type === 'submit')   { uNav('submit'); }
+  if (route.type === 'dashboard'){ uNav('dashboard'); }
+}
+
+window.addEventListener('hashchange', handleHashChange);
+// Handle initial page load with hash
+document.addEventListener('DOMContentLoaded', () => { setTimeout(handleHashChange, 800); });
+
+// ═══════════════════════════════════════════════
+// AUTH UI
+// ═══════════════════════════════════════════════
+function openAuthModal() {
+  document.getElementById('auth-modal').classList.add('open');
+}
+function closeAuthModal() {
+  document.getElementById('auth-modal').classList.remove('open');
+  document.getElementById('li-err').textContent = '';
+  document.getElementById('su-err').textContent = '';
+}
+function switchAuthTab(tab) {
+  document.getElementById('auth-login-form').style.display  = tab === 'login'  ? 'block' : 'none';
+  document.getElementById('auth-signup-form').style.display = tab === 'signup' ? 'block' : 'none';
+  document.getElementById('tab-login').classList.toggle('active',  tab === 'login');
+  document.getElementById('tab-signup').classList.toggle('active', tab === 'signup');
+}
+function previewAvatar(input) {
+  const f = input.files[0];
+  if (!f) return;
+  window._avatarFile = f;
+  const reader = new FileReader();
+  reader.onload = e => document.getElementById('su-avatar-preview').src = e.target.result;
+  reader.readAsDataURL(f);
+}
+function updateNavAuth(loggedIn) {
+  document.getElementById('nav-login-btn').style.display  = loggedIn ? 'none'  : 'flex';
+  document.getElementById('nav-user-wrap').style.display  = loggedIn ? 'flex'  : 'none';
+  document.getElementById('mob-signin').style.display     = loggedIn ? 'none'  : 'block';
+  document.getElementById('mob-dashboard').style.display  = loggedIn ? 'block' : 'none';
+  document.getElementById('mob-signout').style.display    = loggedIn ? 'block' : 'none';
+  if (loggedIn && window._userProfile) {
+    const name = window._userProfile.name || window._currentUser.email;
+    document.getElementById('nav-username').textContent = name.split(' ')[0];
+    if (window._userProfile.photoURL) {
+      document.getElementById('nav-avatar').src = window._userProfile.photoURL;
+    }
+  }
+}
+
+// ═══════════════════════════════════════════════
+// SIGN UP
+// ═══════════════════════════════════════════════
+async function doSignup() {
+  const name  = document.getElementById('su-name').value.trim();
+  const email = document.getElementById('su-email').value.trim();
+  const phone = document.getElementById('su-phone').value.trim();
+  const pw    = document.getElementById('su-pw').value;
+  const bio   = document.getElementById('su-bio').value.trim();
+  const errEl = document.getElementById('su-err');
+  const btn   = document.getElementById('su-btn');
+
+  if (!name || !email || !phone || !pw) { errEl.textContent = 'Please fill in all required fields.'; return; }
+  if (!/^0[0-9]{9}$/.test(phone)) { errEl.textContent = 'Enter a valid Ghana number: 0XXXXXXXXX'; return; }
+  if (pw.length < 6) { errEl.textContent = 'Password must be at least 6 characters.'; return; }
+
+  btn.disabled = true; btn.textContent = 'Creating account...';
+  errEl.textContent = '';
+
+  try {
+    const cred = await createUserWithEmailAndPassword(window._auth, email, pw);
+    const uid  = cred.user.uid;
+    const slug = name.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'') + '-' + uid.slice(0,6);
+
+    // Upload avatar if provided
+    let photoURL = '';
+    if (window._avatarFile) {
+      try {
+        const storRef = window._ref(window._storage, 'avatars/' + uid);
+        await window._uploadBytes(storRef, window._avatarFile);
+        photoURL = await window._getDownloadURL(storRef);
+      } catch(e) { console.warn('Avatar upload failed:', e.message); }
+    }
+
+    // Save user profile to Firestore
+    const profile = {
+      uid, name: sanitize(name), email, phone: sanitize(phone),
+      bio: sanitize(bio), photoURL, slug,
+      created_at: new Date().toISOString(), verified: false
+    };
+    await window._addDoc
+      ? await window._addDoc(window._collection(window._db, 'users_by_slug'), { uid, slug })
+      : null;
+    await window._updateDoc(window._doc(window._db, 'users', uid), profile)
+      .catch(() => window._addDoc(window._collection(window._db, 'users_placeholder'), profile));
+
+    // Use setDoc approach via updateDoc with merge
+    try {
+      const { setDoc } = await import("https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js");
+      await setDoc(window._doc(window._db, 'users', uid), profile);
+    } catch(e) { console.warn('setDoc not imported, profile may not save fully'); }
+
+    window._userProfile = profile;
+    await updateProfile(cred.user, { displayName: name, photoURL });
+    closeAuthModal();
+    toast('Account created! Welcome to RentMate ✓');
+    updateNavAuth(true);
+  } catch(e) {
+    const msgs = {
+      'auth/email-already-in-use': 'This email is already registered. Please sign in.',
+      'auth/invalid-email': 'Please enter a valid email address.',
+      'auth/weak-password': 'Password is too weak. Use at least 6 characters.'
+    };
+    errEl.textContent = msgs[e.code] || e.message;
+    btn.disabled = false; btn.textContent = 'Create Account';
+  }
+}
+
+// ═══════════════════════════════════════════════
+// SIGN IN
+// ═══════════════════════════════════════════════
+async function doLogin() {
+  const email = document.getElementById('li-email').value.trim();
+  const pw    = document.getElementById('li-pw').value;
+  const errEl = document.getElementById('li-err');
+  const btn   = document.getElementById('li-btn');
+
+  if (!email || !pw) { errEl.textContent = 'Please enter your email and password.'; return; }
+  btn.disabled = true; btn.textContent = 'Signing in...';
+  errEl.textContent = '';
+
+  try {
+    await signInWithEmailAndPassword(window._auth, email, pw);
+    closeAuthModal();
+    toast('Welcome back ✓');
+  } catch(e) {
+    const msgs = {
+      'auth/user-not-found':  'No account found with this email.',
+      'auth/wrong-password':  'Incorrect password. Please try again.',
+      'auth/invalid-email':   'Please enter a valid email address.',
+      'auth/too-many-requests': 'Too many attempts. Please try again later.'
+    };
+    errEl.textContent = msgs[e.code] || 'Sign in failed. Please try again.';
+    btn.disabled = false; btn.textContent = 'Sign In';
+  }
+}
+
+// ═══════════════════════════════════════════════
+// SIGN OUT
+// ═══════════════════════════════════════════════
+async function doLogout() {
+  try {
+    await signOut(window._auth);
+    toast('Signed out successfully.');
+    uNav('home');
+  } catch(e) { toast('Sign out failed.', true); }
+}
+
+// ═══════════════════════════════════════════════
+// LANDLORD PROFILE VIEW
+// ═══════════════════════════════════════════════
+async function renderProfileView(slugOrUid) {
+  uNav('profile');
+  setHash('landlord', slugOrUid);
+  const profileContent = document.getElementById('profile-content');
+  const profileGrid    = document.getElementById('profile-listings-grid');
+  const profileNone    = document.getElementById('profile-no-listings');
+  profileContent.innerHTML = '<div style="color:var(--smoke);font-size:14px">Loading profile...</div>';
+
+  let profile = null;
+  try {
+    // Try direct UID lookup first
+    const snap = await window._getDoc(window._doc(window._db, 'users', slugOrUid));
+    if (snap.exists()) { profile = snap.data(); }
+  } catch(e) {}
+
+  if (!profile) {
+    profileContent.innerHTML = '<p style="color:var(--smoke)">Profile not found.</p>';
+    return;
+  }
+
+  const joinDate = profile.created_at ? new Date(profile.created_at).toLocaleDateString('en-GB',{month:'long',year:'numeric'}) : '';
+  profileContent.innerHTML = `
+    <img class="profile-avatar-lg" src="${profile.photoURL || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'%3E%3Ccircle cx='48' cy='48' r='48' fill='%232a2a2a'/%3E%3Ccircle cx='48' cy='38' r='18' fill='%23535353'/%3E%3Cellipse cx='48' cy='82' rx='28' ry='18' fill='%23535353'/%3E%3C/svg%3E"}" alt="${profile.name}"/>
+    <h1 class="profile-name">${profile.name}</h1>
+    ${profile.bio ? `<p class="profile-bio">${profile.bio}</p>` : ''}
+    <div class="profile-meta">
+      ${profile.phone ? `<div class="profile-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 16.92v3a2 2 0 01-2.18 2A19.79 19.79 0 013.08 5.18 2 2 0 015.09 3h3a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L9.14 10.84a16 16 0 006.02 6.02l1.2-1.2a2 2 0 012.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0122 16.92z"/></svg>${profile.phone}</div>` : ''}
+      ${joinDate ? `<div class="profile-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Member since ${joinDate}</div>` : ''}
+      ${profile.verified ? `<div class="profile-meta-item" style="color:var(--gold)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Verified Landlord</div>` : ''}
+    </div>`;
+
+  // Show their approved listings
+  const myListings = listings.filter(l => l.is_approved && (l.uid === slugOrUid || l.uid === profile.uid));
+  if (myListings.length) {
+    profileNone.style.display = 'none';
+    profileGrid.innerHTML = myListings.map((l,i) => renderCard(l,i)).join('');
+  } else {
+    profileNone.style.display = 'block';
+    profileGrid.innerHTML = '';
+  }
+}
+
+// ═══════════════════════════════════════════════
+// LANDLORD DASHBOARD
+// ═══════════════════════════════════════════════
+function renderDashboard() {
+  if (!window._currentUser) { openAuthModal(); return; }
+  const uid = window._currentUser.uid;
+  const container = document.getElementById('dash-listings');
+  const empty     = document.getElementById('dash-empty');
+  const myListings = listings.filter(l => l.uid === uid);
+
+  if (!myListings.length) {
+    container.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+  container.innerHTML = myListings.map(l => {
+    const statusLabel = l.is_approved ? 'Live' : (l._rejected ? 'Rejected' : 'Pending');
+    const statusClass = l.is_approved ? 'dash-status-live' : (l._rejected ? 'dash-status-rejected' : 'dash-status-pending');
+    return `
+    <div class="dash-listing-row">
+      <img class="dash-listing-img" src="${l.images?.[0]||IMGS[0]}" onerror="this.src='${IMGS[0]}'" alt=""/>
+      <div style="flex:1;min-width:0">
+        <div class="dash-listing-title">${l.title}</div>
+        <div class="dash-listing-meta">${l.city}, ${l.region} · ${fmt(l.price)} ${fmtDur(l.duration)}</div>
+      </div>
+      <span class="dash-status ${statusClass}">${statusLabel}</span>
+      <div class="dash-listing-actions">
+        <button class="dash-btn dash-btn-edit" onclick="openEditModal('${l._fbId||l.id}')">Edit</button>
+        <button class="dash-btn dash-btn-del" onclick="deleteListing('${l._fbId||l.id}')">Delete</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════
+// EDIT LISTING
+// ═══════════════════════════════════════════════
+function openEditModal(fbId) {
+  const l = listings.find(x => x._fbId === fbId || x.id === fbId);
+  if (!l) return;
+  if (!window._currentUser || l.uid !== window._currentUser.uid) {
+    toast('You can only edit your own listings.', true); return;
+  }
+  document.getElementById('edit-form-inner').innerHTML = `
+    <div style="display:grid;gap:16px">
+      <div class="form-group">
+        <label class="form-label">Listing Title *</label>
+        <input class="modal-input" id="ed-title" value="${l.title}" style="width:100%"/>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div class="form-group">
+          <label class="form-label">Price (GH₵) *</label>
+          <input class="modal-input" id="ed-price" type="number" value="${l.price}" style="width:100%"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Duration *</label>
+          <select class="modal-input" id="ed-duration" style="width:100%;appearance:none">
+            <option value="monthly" ${l.duration==='monthly'?'selected':''}>Monthly</option>
+            <option value="yearly" ${l.duration==='yearly'?'selected':''}>Yearly</option>
+            <option value="2 years" ${l.duration==='2 years'?'selected':''}>2 Years</option>
+            <option value="negotiable" ${l.duration==='negotiable'?'selected':''}>Negotiable</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Landmark / Neighbourhood</label>
+        <input class="modal-input" id="ed-landmark" value="${l.landmark||''}" style="width:100%"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Description *</label>
+        <textarea class="modal-textarea" id="ed-desc" rows="4" style="width:100%">${l.description}</textarea>
+      </div>
+      <div class="modal-err" id="ed-err"></div>
+      <div style="display:flex;gap:12px">
+        <button class="modal-btn" style="flex:1" onclick="saveEdit('${l._fbId||l.id}')">Save Changes</button>
+        <button onclick="closeEditModal()" style="flex:1;height:46px;border:1px solid rgba(201,168,76,.2);border-radius:3px;color:var(--smoke);background:transparent;cursor:pointer;font-family:'Outfit',sans-serif;font-size:12px;letter-spacing:.1em;text-transform:uppercase">Cancel</button>
+      </div>
+    </div>`;
+  document.getElementById('edit-modal').classList.add('open');
+}
+
+function closeEditModal() {
+  document.getElementById('edit-modal').classList.remove('open');
+}
+
+async function saveEdit(fbId) {
+  const title    = document.getElementById('ed-title').value.trim();
+  const price    = parseFloat(document.getElementById('ed-price').value);
+  const duration = document.getElementById('ed-duration').value;
+  const landmark = document.getElementById('ed-landmark').value.trim();
+  const desc     = document.getElementById('ed-desc').value.trim();
+  const errEl    = document.getElementById('ed-err');
+
+  if (!title || !price || !desc) { errEl.textContent = 'Please fill in all required fields.'; return; }
+
+  const updates = {
+    title: sanitize(title), price, duration,
+    landmark: sanitize(landmark), description: sanitize(desc),
+    updated_at: new Date().toISOString(),
+    is_approved: false  // Re-submit for review after edit
+  };
+
+  try {
+    if (window._dbReady && fbId) {
+      await window._updateDoc(window._doc(window._db, 'listings', fbId), updates);
+    }
+    // Update local array
+    const l = listings.find(x => x._fbId === fbId || x.id === fbId);
+    if (l) Object.assign(l, updates);
+    closeEditModal();
+    toast('Listing updated. Pending re-review ✓');
+    renderDashboard();
+  } catch(e) {
+    errEl.textContent = 'Save failed: ' + e.message;
+  }
+}
+
+async function deleteListing(fbId) {
+  if (!confirm('Delete this listing permanently? This cannot be undone.')) return;
+  if (!window._currentUser) { toast('You must be signed in.', true); return; }
+  try {
+    if (window._dbReady && fbId) {
+      await window._deleteDoc(window._doc(window._db, 'listings', fbId));
+    }
+    window.listings = window.listings.filter(l => l._fbId !== fbId && l.id !== fbId);
+    toast('Listing deleted.');
+    renderDashboard();
+  } catch(e) { toast('Delete failed: ' + e.message, true); }
+}
+
+// Close modals on overlay click
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('auth-modal').addEventListener('click', function(e) {
+    if (e.target === this) closeAuthModal();
+  });
+  document.getElementById('edit-modal').addEventListener('click', function(e) {
+    if (e.target === this) closeEditModal();
+  });
+});
+
+// ═══════════════════════════════════════════════
+// REPORT + SHARE
+// ═══════════════════════════════════════════════
+function reportListing(id) {
+  const l = listings.find(x => x.id === id || x._fbId === id);
+  if (!l) return;
+  // Rate limit reports: max 5 per hour per browser
+  const RPT_KEY = 'rm_reports';
+  try {
+    const stored = JSON.parse(localStorage.getItem(RPT_KEY) || '[]');
+    const now = Date.now();
+    const recent = stored.filter(t => now - t < 3600000);
+    if (recent.length >= 5) { toast('Too many reports. Please try again later.', true); return; }
+    // Check if already reported this listing
+    const rptdKey = 'rm_rptd_' + (l._fbId || l.id);
+    if (localStorage.getItem(rptdKey)) { toast('You have already reported this listing.', true); return; }
+    recent.push(now);
+    localStorage.setItem(RPT_KEY, JSON.stringify(recent));
+    localStorage.setItem(rptdKey, '1');
+  } catch(err) {}
+  // Save report to Firebase
+  const report = {
+    listing_id: l._fbId || l.id,
+    listing_title: l.title,
+    reason: 'User report',
+    created_at: new Date().toISOString()
+  };
+  if (window._dbReady) {
+    window._addDoc(window._collection(window._db, 'reports'), report)
+      .then(() => toast('Listing reported. We will review it shortly.'))
+      .catch(() => toast('Listing reported. Thank you.'));
+  } else {
+    toast('Listing reported. Thank you.');
+  }
+  // Increment report_count locally
+  if (typeof l.report_count === 'number') l.report_count++;
+}
+
+function shareListing(id) {
+  const l = listings.find(x => x.id === id || x._fbId === id);
+  if (!l) return;
+  const url = window.location.href.split('?')[0];
+  const text = `Check out this rental listing on RentMate Ghana:
+${l.title} — ${l.city}, ${l.region}
+GH₵${Number(l.price).toLocaleString()} ${fmtDur(l.duration)}
+${url}`;
+  // Try native share first (mobile), fall back to WhatsApp share
+  if (navigator.share) {
+    navigator.share({ title: l.title, text, url }).catch(() => {});
+  } else {
+    const wa = 'https://wa.me/?text=' + encodeURIComponent(text);
+    window.open(wa, '_blank');
+  }
+}
+
 // ═══════════════════════════════════════════════
 // TOAST
 // ═══════════════════════════════════════════════
@@ -1704,6 +2435,8 @@ function toast(msg, isErr) {
 document.addEventListener('DOMContentLoaded', () => {
   initDropdowns();
   setTimeout(renderFeatured, 600);
+  // Note: Firebase Auth must be enabled in Firebase Console
+  // Go to: Authentication → Sign-in method → Email/Password → Enable
   document.getElementById('adm-pw').addEventListener('keydown', e => {
     if (e.key === 'Enter') doAdminLogin();
   });
