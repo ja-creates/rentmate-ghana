@@ -837,7 +837,7 @@ input,select,textarea{font-family:'Outfit',sans-serif}
             <div class="footer-head">Platform</div>
             <span class="footer-link" onclick="uNav('listings')">Browse Listings</span>
             <span class="footer-link" onclick="uNav('submit')">Post Property</span>
-            <span class="footer-link" onclick="switchSite('admin')">Admin Panel</span>
+
           </div>
           <div>
             <div class="footer-head">Trust</div>
@@ -1047,7 +1047,7 @@ input,select,textarea{font-family:'Outfit',sans-serif}
 <!-- ══════════════════════════════════════════════════════
      ADMIN SITE
 ══════════════════════════════════════════════════════ -->
-<div id="admin-site">
+<div id="admin-site" style="display:none">
   <!-- Top bar -->
   <div class="admin-bar">
     <div class="admin-logo">
@@ -1075,7 +1075,7 @@ input,select,textarea{font-family:'Outfit',sans-serif}
         <input type="password" class="admin-login-input" id="adm-pw" placeholder="••••••••" onkeydown="if(event.key==='Enter')doAdminLogin()"/>
       </div>
       <button class="admin-login-btn" onclick="doAdminLogin()">Sign In</button>
-      <p class="admin-login-hint">Demo password: admin123</p>
+      
     </div>
   </div>
 
@@ -1225,7 +1225,7 @@ let listings = [
 
 window.listings = listings;
 let selFiles = [];
-const ADMIN_PW = 'admin123';
+const ADMIN_PW = 'RentMate@Ghana#2025';
 let adminIn = false;
 let adminTab = 'all';
 
@@ -1293,6 +1293,9 @@ function uNav(view, id) {
 }
 
 function switchSite(s) {
+  if (s === 'admin' && !window.location.search.includes('admin')) {
+    toast('Access denied.', true); return;
+  }
   document.getElementById('user-site').style.display = s === 'user' ? 'block' : 'none';
   document.getElementById('admin-site').style.display = s === 'admin' ? 'block' : 'none';
   window.scrollTo({top:0,behavior:'smooth'});
@@ -1690,9 +1693,12 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('adm-pw').addEventListener('keydown', e => {
     if (e.key === 'Enter') doAdminLogin();
   });
-  // Secret admin access — only show toggle if ?admin in URL
+  // Secret admin access — only accessible via ?admin in URL
   if (window.location.search.includes('admin')) {
     document.getElementById('site-toggle').style.display = 'flex';
+    // Auto-switch to admin view if ?admin present
+    document.getElementById('user-site').style.display = 'none';
+    document.getElementById('admin-site').style.display = 'block';
   }
   // Also support switching back to user from admin
   window._showAdminToggle = function() {
