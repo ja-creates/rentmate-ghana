@@ -1118,7 +1118,7 @@ input,select,textarea{font-family:'Outfit',sans-serif}
 <!-- Firebase -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, doc, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDtGDgWZpwSV2QJRpZnlUzU-Om_TL0skbk",
@@ -1132,38 +1132,52 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db  = getFirestore(app);
 
-window._db         = db;
+window._db        = db;
 window._collection = collection;
-window._addDoc     = addDoc;
-window._getDocs    = getDocs;
-window._doc        = doc;
-window._updateDoc  = updateDoc;
-window._dbReady    = true;
+window._addDoc    = addDoc;
+window._doc       = doc;
+window._updateDoc = updateDoc;
+window._dbReady   = true;
 
-async function loadFromFirebase() {
-  try {
-    const snap = await getDocs(collection(db, "listings"));
-    if (!snap.empty) {
-      const fbListings = [];
-      snap.forEach(d => fbListings.push({ ...d.data(), _fbId: d.id }));
-      // Add Firebase listings that aren't already in the array
-      fbListings.forEach(fl => {
-        if (!window.listings.find(l => l._fbId === fl._fbId)) {
-          window.listings.push(fl);
-        }
-      });
-      console.log("Loaded " + snap.size + " listings from Firebase ✓");
-      if (typeof renderFeatured === 'function') renderFeatured();
-      if (typeof renderListings === 'function' && document.getElementById('view-listings')?.classList.contains('active')) renderListings();
-      if (typeof refreshAdmin === 'function' && window.adminIn) refreshAdmin();
+// ── REAL-TIME LISTENER ──
+// Fires instantly whenever ANY listing is added, changed or deleted in Firestore
+// No refresh needed — site updates live for everyone
+function startRealtimeListener() {
+  onSnapshot(collection(db, "listings"), (snapshot) => {
+    // Rebuild the Firebase portion of the listings array from scratch
+    const fbIds = new Set();
+    snapshot.forEach(d => {
+      fbIds.add(d.id);
+      const existing = window.listings.find(l => l._fbId === d.id);
+      if (existing) {
+        // Update existing listing in place
+        Object.assign(existing, d.data(), { _fbId: d.id });
+      } else {
+        // New listing — add it
+        window.listings.push({ ...d.data(), _fbId: d.id });
+      }
+    });
+    // Remove listings deleted from Firebase
+    window.listings = window.listings.filter(l => !l._fbId || fbIds.has(l._fbId));
+
+    console.log("Firebase sync: " + snapshot.size + " listings ✓");
+
+    // Re-render whatever view is currently active
+    if (typeof renderFeatured === "function") renderFeatured();
+    if (typeof renderListings === "function" &&
+        document.getElementById("view-listings")?.classList.contains("active")) {
+      renderListings();
     }
-  } catch(e) {
-    console.warn("Firebase load:", e.message);
-  }
+    if (typeof refreshAdmin === "function" && window.adminIn) {
+      refreshAdmin();
+    }
+  }, (err) => {
+    console.warn("Firebase listener error:", err.message);
+  });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  setTimeout(loadFromFirebase, 800);
+document.addEventListener("DOMContentLoaded", () => {
+  setTimeout(startRealtimeListener, 600);
 });
 </script>
 
