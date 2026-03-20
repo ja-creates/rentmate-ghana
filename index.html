@@ -1321,7 +1321,7 @@ input,select,textarea{font-family:'Outfit',sans-serif}
 <!-- Firebase -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
-import { getFirestore, collection, addDoc, doc, updateDoc, deleteDoc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, setDoc, doc, updateDoc, deleteDoc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-storage.js";
 
@@ -1355,6 +1355,13 @@ window._getDownloadURL = getDownloadURL;
 window._dbReady    = true;
 window._currentUser = null;
 window._avatarFile  = null;
+
+// Expose Firebase Auth functions so non-module scripts can call them
+window._setDoc                         = setDoc;
+window._createUserWithEmailAndPassword = createUserWithEmailAndPassword;
+window._signInWithEmailAndPassword     = signInWithEmailAndPassword;
+window._signOut                        = signOut;
+window._updateProfile                  = updateProfile;
 
 // ── AUTH STATE LISTENER ──
 onAuthStateChanged(auth, async (user) => {
@@ -1716,7 +1723,7 @@ function renderListings() {
 // DETAIL
 // ═══════════════════════════════════════════════
 function renderDetail(id) {
-  const l = listings.find(x => x.id === id);
+  const l = listings.find(x => x._fbId === id || x.id === id);
   if (!l) { uNav('listings'); return; }
   const wa = buildWA(l.phone, l.title);
   const imgs = l.images || [IMGS[0]];
@@ -1874,7 +1881,7 @@ function handleSubmit(e) {
       try {
         const docRef = await window._addDoc(window._collection(window._db, 'listings'), newL);
         newL._fbId = docRef.id;
-        console.log('Saved to Firebase ✓', docRef.id);
+        console.log('Listing saved ✓');
       } catch(e) {
         console.warn('Firebase save failed, saving locally:', e.message);
         listings.push(newL);
@@ -1927,7 +1934,7 @@ function setAdminTab(t) {
 }
 function refreshAdmin() {
   const total    = listings.length;
-  const pending  = listings.filter(l => !l.is_approved).length;
+  const pending  = listings.filter(l => !l.is_approved && !l._rejected).length;
   const approved = listings.filter(l => l.is_approved).length;
   const rejected = listings.filter(l => l._rejected).length;
   document.getElementById('m-total').textContent    = total;
@@ -1961,20 +1968,20 @@ function renderAdminTable() {
       </td>
       <td>
         <div class="admin-actions-td">
-          ${!l.is_approved && !l._rejected ? `<button class="admin-btn abtn-approve" onclick="admAct('approve','${l.id}')">Approve</button>` : ''}
-          ${l.is_approved ? `<button class="admin-btn abtn-reject" onclick="admAct('reject','${l.id}')">Unpublish</button>` : ''}
-          ${!l.is_approved && !l._rejected ? `<button class="admin-btn abtn-reject" onclick="admAct('reject','${l.id}')">Reject</button>` : ''}
-          ${l.is_approved && !l.is_verified ? `<button class="admin-btn abtn-verify" onclick="admAct('verify','${l.id}')">Verify</button>` : ''}
+          ${!l.is_approved && !l._rejected ? `<button class="admin-btn abtn-approve" onclick="admAct('approve','${l._fbId||l.id}')">Approve</button>` : ''}
+          ${l.is_approved ? `<button class="admin-btn abtn-reject" onclick="admAct('reject','${l._fbId||l.id}')">Unpublish</button>` : ''}
+          ${!l.is_approved && !l._rejected ? `<button class="admin-btn abtn-reject" onclick="admAct('reject','${l._fbId||l.id}')">Reject</button>` : ''}
+          ${l.is_approved && !l.is_verified ? `<button class="admin-btn abtn-verify" onclick="admAct('verify','${l._fbId||l.id}')">Verify</button>` : ''}
           ${l.is_verified ? `<span style="font-size:11px;color:#7cb9f4;letter-spacing:.06em">✦ Verified</span>` : ''}
-          ${l._rejected && !l.is_approved ? `<button class="admin-btn abtn-approve" onclick="admAct('approve','${l.id}')">Restore</button>` : ''}
+          ${l._rejected && !l.is_approved ? `<button class="admin-btn abtn-approve" onclick="admAct('approve','${l._fbId||l.id}')">Restore</button>` : ''}
         </div>
       </td>
     </tr>`;
   }).join('');
 }
 function admAct(action, id) {
-  const l = listings.find(x => x.id === id);
-  if (!l) return;
+  const l = listings.find(x => x._fbId === id || x.id === id);
+  if (!l) { console.warn('admAct: listing not found for id:', id); return; }
   let updates = {};
   if (action === 'approve') { l.is_approved = true; l._rejected = false; updates = {is_approved:true, _rejected:false}; toast(`"${l.title.slice(0,30)}…" approved ✓`); }
   if (action === 'reject')  { l.is_approved = false; l._rejected = true; l.is_verified = false; updates = {is_approved:false, _rejected:true, is_verified:false}; toast(`"${l.title.slice(0,28)}…" rejected`, true); }
@@ -1982,10 +1989,12 @@ function admAct(action, id) {
   // Persist to Firebase if available
   if (window._dbReady && l._fbId) {
     window._updateDoc(window._doc(window._db, 'listings', l._fbId), updates)
-      .then(() => console.log('Firebase updated ✓'))
-      .catch(e => console.warn('Firebase update failed:', e.message));
+      .then(() => { console.log('Firebase updated ✓'); refreshAdmin(); })
+      .catch(e => { console.warn('Firebase update failed:', e.message); refreshAdmin(); });
+  } else {
+    // No Firebase ID — update local only
+    refreshAdmin();
   }
-  refreshAdmin();
 }
 
 
@@ -2088,7 +2097,7 @@ async function doSignup() {
   errEl.textContent = '';
 
   try {
-    const cred = await createUserWithEmailAndPassword(window._auth, email, pw);
+    const cred = await window._createUserWithEmailAndPassword(window._auth, email, pw);
     const uid  = cred.user.uid;
     const slug = name.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'') + '-' + uid.slice(0,6);
 
@@ -2108,20 +2117,10 @@ async function doSignup() {
       bio: sanitize(bio), photoURL, slug,
       created_at: new Date().toISOString(), verified: false
     };
-    await window._addDoc
-      ? await window._addDoc(window._collection(window._db, 'users_by_slug'), { uid, slug })
-      : null;
-    await window._updateDoc(window._doc(window._db, 'users', uid), profile)
-      .catch(() => window._addDoc(window._collection(window._db, 'users_placeholder'), profile));
-
-    // Use setDoc approach via updateDoc with merge
-    try {
-      const { setDoc } = await import("https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js");
-      await setDoc(window._doc(window._db, 'users', uid), profile);
-    } catch(e) { console.warn('setDoc not imported, profile may not save fully'); }
-
+    // Save profile with setDoc (creates or overwrites cleanly)
+    await window._setDoc(window._doc(window._db, 'users', uid), profile);
     window._userProfile = profile;
-    await updateProfile(cred.user, { displayName: name, photoURL });
+    await window._updateProfile(cred.user, { displayName: name, photoURL: photoURL || '' });
     closeAuthModal();
     toast('Account created! Welcome to RentMate ✓');
     updateNavAuth(true);
@@ -2150,7 +2149,7 @@ async function doLogin() {
   errEl.textContent = '';
 
   try {
-    await signInWithEmailAndPassword(window._auth, email, pw);
+    await window._signInWithEmailAndPassword(window._auth, email, pw);
     closeAuthModal();
     toast('Welcome back ✓');
   } catch(e) {
@@ -2170,7 +2169,7 @@ async function doLogin() {
 // ═══════════════════════════════════════════════
 async function doLogout() {
   try {
-    await signOut(window._auth);
+    await window._signOut(window._auth);
     toast('Signed out successfully.');
     uNav('home');
   } catch(e) { toast('Sign out failed.', true); }
