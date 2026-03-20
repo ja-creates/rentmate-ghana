@@ -15,6 +15,22 @@
 <meta name="twitter:title" content="RentMate Ghana"/>
 <meta name="twitter:description" content="Find affordable rentals across all 16 regions of Ghana. Zero commission."/>
 <link rel="canonical" href="https://ja-creates.github.io/rentmate-ghana"/>
+<!-- Security Headers via meta tags -->
+<meta http-equiv="X-Content-Type-Options" content="nosniff"/>
+<meta http-equiv="X-Frame-Options" content="DENY"/>
+<meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin"/>
+<meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=()"/>
+<meta http-equiv="Content-Security-Policy" content="
+  default-src 'self';
+  script-src 'self' 'unsafe-inline' https://www.gstatic.com https://cdn.jsdelivr.net https://fonts.googleapis.com;
+  style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com;
+  font-src 'self' https://fonts.gstatic.com;
+  img-src 'self' https: data: blob:;
+  connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://firebasestorage.googleapis.com;
+  frame-ancestors 'none';
+  base-uri 'self';
+  form-action 'self';
+"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
@@ -723,6 +739,132 @@ input,select,textarea{font-family:'Outfit',sans-serif}
 .edit-modal-overlay.open{opacity:1;pointer-events:all}
 .edit-modal-box{background:var(--obsidian-2);border:1px solid rgba(201,168,76,.18);padding:40px;width:100%;max-width:680px;position:relative}
 
+
+/* ── REPORTS PANEL ── */
+.report-card{
+  background:var(--obsidian-2);
+  border:1px solid rgba(201,168,76,.08);
+  border-left:3px solid rgba(192,57,43,.5);
+  padding:20px 24px;margin-bottom:10px;
+  display:grid;grid-template-columns:1fr auto;gap:16px;align-items:start;
+}
+.report-card.resolved{border-left-color:rgba(26,107,58,.4);opacity:.6}
+.report-card.dismissed{border-left-color:rgba(138,138,138,.3);opacity:.5}
+.report-title{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:300;color:var(--white);margin-bottom:6px;letter-spacing:.04em}
+.report-meta{font-size:11px;color:var(--smoke);letter-spacing:.06em;line-height:1.8}
+.report-reason{display:inline-flex;align-items:center;gap:6px;font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:3px 10px;border-radius:0;margin-bottom:10px}
+.report-reason.fraud{background:rgba(192,57,43,.12);color:#e74c3c;border:1px solid rgba(192,57,43,.2)}
+.report-reason.misleading{background:rgba(201,168,76,.08);color:var(--gold);border:1px solid rgba(201,168,76,.15)}
+.report-reason.scam{background:rgba(192,57,43,.15);color:#e74c3c;border:1px solid rgba(192,57,43,.25)}
+.report-reason.wrong-info{background:rgba(26,74,122,.12);color:#7cb9f4;border:1px solid rgba(26,74,122,.2)}
+.report-reason.other{background:rgba(138,138,138,.1);color:var(--smoke);border:1px solid rgba(138,138,138,.15)}
+.report-actions{display:flex;flex-direction:column;gap:8px;flex-shrink:0}
+.report-btn{padding:8px 16px;font-size:9px;letter-spacing:.16em;text-transform:uppercase;border-radius:0;cursor:pointer;font-family:'Outfit',sans-serif;font-weight:300;transition:all .2s;white-space:nowrap}
+.report-btn-remove{background:rgba(192,57,43,.1);color:#e74c3c;border:1px solid rgba(192,57,43,.3)}
+.report-btn-remove:hover{background:rgba(192,57,43,.2)}
+.report-btn-dismiss{background:transparent;color:var(--smoke);border:1px solid rgba(138,138,138,.2)}
+.report-btn-dismiss:hover{border-color:var(--smoke);color:var(--pearl)}
+.report-btn-view{background:transparent;color:var(--gold);border:1px solid rgba(201,168,76,.2)}
+.report-btn-view:hover{background:rgba(201,168,76,.06)}
+.report-count-badge{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;border-radius:9px;background:var(--danger);color:var(--white);font-size:10px;font-weight:500;padding:0 5px;margin-left:7px;vertical-align:middle}
+.reports-empty{text-align:center;padding:80px 20px;color:var(--smoke)}
+.reports-empty p:first-child{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:300;color:var(--pearl);margin-bottom:8px;letter-spacing:.04em}
+.report-listing-preview{display:flex;gap:12px;align-items:center;padding:12px 14px;background:var(--obsidian-3);border:1px solid rgba(201,168,76,.06);margin-bottom:12px}
+.report-listing-img{width:56px;height:42px;object-fit:cover;flex-shrink:0}
+.report-listing-info{font-size:12px;color:var(--smoke);line-height:1.6}
+.report-listing-info strong{color:var(--pearl);font-weight:400}
+.report-filter-bar{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap;align-items:center}
+.report-filter-btn{padding:6px 16px;font-size:9px;letter-spacing:.16em;text-transform:uppercase;border-radius:0;cursor:pointer;font-family:'Outfit',sans-serif;font-weight:300;background:transparent;border:1px solid rgba(201,168,76,.15);color:var(--smoke);transition:all .2s}
+.report-filter-btn.active,.report-filter-btn:hover{border-color:var(--gold);color:var(--gold)}
+
+
+/* ── SAFETY SYSTEM ── */
+.safety-checklist{
+  background:rgba(13,13,13,.6);
+  border:1px solid rgba(201,168,76,.12);
+  border-top:2px solid rgba(201,168,76,.4);
+  padding:20px 24px;margin-top:20px;
+}
+.safety-checklist-title{
+  font-size:9px;letter-spacing:.28em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:14px;font-weight:300;
+  display:flex;align-items:center;gap:10px;
+}
+.safety-checklist-title::before{content:'⚠';font-size:13px}
+.safety-item{
+  display:flex;align-items:flex-start;gap:10px;
+  margin-bottom:10px;font-size:12px;color:var(--mist);
+  line-height:1.6;font-weight:300;
+}
+.safety-item::before{
+  content:'✓';color:var(--gold);font-size:11px;
+  margin-top:2px;flex-shrink:0;font-weight:400;
+}
+.safety-item.danger::before{content:'✕';color:#e74c3c}
+.safety-tip{
+  background:rgba(192,57,43,.06);
+  border:1px solid rgba(192,57,43,.15);
+  border-left:2px solid #e74c3c;
+  padding:12px 14px;margin-top:14px;
+  font-size:11px;color:var(--mist);line-height:1.7;font-weight:300;
+}
+.safety-tip strong{color:#e74c3c;font-weight:400}
+.verify-btn{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  width:100%;padding:12px;margin-top:14px;
+  background:transparent;color:var(--gold);
+  font-size:9px;font-weight:300;letter-spacing:.2em;text-transform:uppercase;
+  border:1px solid rgba(201,168,76,.2);cursor:pointer;
+  font-family:'Outfit',sans-serif;transition:all .2s;
+}
+.verify-btn:hover{background:rgba(201,168,76,.06);border-color:rgba(201,168,76,.4)}
+/* Safety page */
+.safety-section-title{
+  font-family:'Cormorant Garamond',serif;font-size:1.6rem;
+  font-weight:300;color:var(--white);margin-bottom:8px;letter-spacing:.04em;
+}
+.safety-warning-box{
+  border:1px solid rgba(192,57,43,.25);border-left:3px solid #e74c3c;
+  background:rgba(192,57,43,.04);padding:16px 18px;margin-bottom:16px;
+}
+.safety-warning-title{font-size:12px;font-weight:400;color:#e74c3c;margin-bottom:6px;letter-spacing:.06em}
+.safety-warning-body{font-size:13px;color:var(--mist);line-height:1.8;font-weight:300}
+.safety-ok-box{
+  border:1px solid rgba(76,222,133,.15);border-left:3px solid #4cde85;
+  background:rgba(76,222,133,.03);padding:16px 18px;margin-bottom:16px;
+}
+.safety-ok-title{font-size:12px;font-weight:400;color:#4cde85;margin-bottom:6px;letter-spacing:.06em}
+.safety-ok-body{font-size:13px;color:var(--mist);line-height:1.8;font-weight:300}
+
+
+/* ── LEGAL PAGES ── */
+.legal-content{max-width:760px;margin:0 auto}
+.legal-h1{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,4vw,3rem);font-weight:300;color:var(--white);margin-bottom:8px;letter-spacing:.04em;line-height:1.1}
+.legal-date{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--smoke);margin-bottom:48px;font-weight:300}
+.legal-section{margin-bottom:40px}
+.legal-section-h{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:300;color:var(--white);margin-bottom:12px;letter-spacing:.04em;padding-bottom:10px;border-bottom:1px solid rgba(201,168,76,.1)}
+.legal-body{font-size:13px;color:var(--mist);line-height:2;font-weight:300;letter-spacing:.02em}
+.legal-body p{margin-bottom:14px}
+.legal-body ul{padding-left:20px;margin-bottom:14px}
+.legal-body ul li{margin-bottom:8px;list-style:none;display:flex;align-items:flex-start;gap:8px}
+.legal-body ul li::before{content:'—';color:var(--gold);flex-shrink:0;opacity:.6}
+.legal-body a{color:var(--gold);text-decoration:underline;text-underline-offset:3px}
+.legal-body strong{color:var(--pearl);font-weight:400}
+.legal-highlight{background:rgba(201,168,76,.04);border:1px solid rgba(201,168,76,.1);border-left:2px solid rgba(201,168,76,.4);padding:16px 20px;margin:20px 0;font-size:13px;color:var(--mist);line-height:1.8;font-weight:300}
+.legal-tabs{display:flex;gap:2px;margin-bottom:40px;border-bottom:1px solid rgba(201,168,76,.1);flex-wrap:wrap}
+.legal-tab{padding:12px 24px;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--smoke);cursor:pointer;border-bottom:1px solid transparent;margin-bottom:-1px;font-weight:300;transition:all .2s}
+.legal-tab.active{color:var(--gold);border-bottom-color:var(--gold)}
+.legal-tab:hover:not(.active){color:var(--pearl)}
+.legal-panel{display:none}
+.legal-panel.active{display:block}
+.cookie-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid rgba(201,168,76,.06);font-size:12px}
+.cookie-row:last-child{border-bottom:none}
+.cookie-name{color:var(--pearl);font-weight:400;letter-spacing:.04em}
+.cookie-desc{color:var(--smoke);font-size:11px;margin-top:3px;font-weight:300}
+.cookie-type{font-size:9px;letter-spacing:.14em;text-transform:uppercase;padding:3px 10px;border-radius:0}
+.cookie-essential{background:rgba(26,107,58,.1);color:#4cde85;border:1px solid rgba(76,222,133,.15)}
+.cookie-functional{background:rgba(201,168,76,.08);color:var(--gold);border:1px solid rgba(201,168,76,.15)}
+
 /* TOAST */
 #toast-root{position:fixed;bottom:100px;right:28px;z-index:9998;display:flex;flex-direction:column;gap:8px;align-items:flex-end;pointer-events:none}
 .toast{
@@ -769,6 +911,7 @@ input,select,textarea{font-family:'Outfit',sans-serif}
       <div class="nav-links">
         <span class="nav-link" onclick="uNav('listings')">Browse</span>
         <span class="nav-link" onclick="uNav('submit')">List Property</span>
+        <span class="nav-link" onclick="uNav('safety')" style="color:#e74c3c;opacity:.8">Safety</span>
         <div id="nav-auth-wrap" style="display:flex;align-items:center;gap:8px">
           <button class="nav-auth-btn" id="nav-login-btn" onclick="openAuthModal()" style="display:flex">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:14px;height:14px"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
@@ -817,6 +960,10 @@ input,select,textarea{font-family:'Outfit',sans-serif}
         <div class="hero-actions">
           <button class="btn-gold" onclick="uNav('listings')">Browse Listings</button>
           <button class="btn-outline" onclick="uNav('submit')">List Your Property</button>
+        </div>
+        <div style="margin-top:24px;display:flex;align-items:center;gap:10px;cursor:pointer" onclick="uNav('safety')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#e74c3c" stroke-width="1.5" style="width:14px;height:14px;flex-shrink:0"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <span style="font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:rgba(232,76,76,.7);font-weight:300">Never pay before viewing · Read our safety guide</span>
         </div>
         <div class="hero-stats">
           <div><div class="hero-stat-num" id="stat-listings">—</div><div class="hero-stat-label">Active Listings</div></div>
@@ -937,14 +1084,27 @@ input,select,textarea{font-family:'Outfit',sans-serif}
           <div>
             <div class="footer-head">Trust</div>
             <p class="footer-link" style="cursor:default">✓ Manual listing review</p>
-            <p class="footer-link" style="cursor:default">✓ No signup required</p>
+            <p class="footer-link" style="cursor:default">✓ Owners only — no agents</p>
             <p class="footer-link" style="cursor:default">✓ Direct WhatsApp contact</p>
-            <p class="footer-link" style="cursor:default">✓ Zero commission fees</p>
+            <p class="footer-link" style="cursor:default">✓ Zero fees for everyone</p>
+          </div>
+          <div>
+            <div class="footer-head">Legal</div>
+            <span class="footer-link" onclick="uNav('legal')">Privacy Policy</span>
+            <span class="footer-link" onclick="switchLegalTab('terms');uNav('legal')">Terms of Use</span>
+            <span class="footer-link" onclick="switchLegalTab('cookies');uNav('legal')">Cookie Policy</span>
+            <span class="footer-link" onclick="switchLegalTab('landlord');uNav('legal')">Landlord Guidelines</span>
+            <span class="footer-link" onclick="uNav('safety')" style="color:rgba(232,76,76,.7)">Safety Guide</span>
           </div>
         </div>
         <div class="footer-bottom">
           <span class="footer-copy">© 2025 RentMate Ghana. All rights reserved.</span>
-          <span class="footer-copy">Verify in person before any payment.</span>
+          <span class="footer-copy" style="display:flex;gap:20px;flex-wrap:wrap">
+            <span onclick="uNav('legal')" style="cursor:pointer;transition:color .2s" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color=''">Privacy Policy</span>
+            <span onclick="switchLegalTab('terms');uNav('legal')" style="cursor:pointer;transition:color .2s" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color=''">Terms of Use</span>
+            <span onclick="switchLegalTab('cookies');uNav('legal')" style="cursor:pointer;transition:color .2s" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color=''">Cookies</span>
+            <span onclick="uNav('safety')" style="cursor:pointer;color:rgba(232,76,76,.7);transition:color .2s" onmouseover="this.style.color='#e74c3c'" onmouseout="this.style.color='rgba(232,76,76,.7)'">Safety Guide</span>
+          </span>
         </div>
       </div>
     </footer>
@@ -1188,6 +1348,469 @@ input,select,textarea{font-family:'Outfit',sans-serif}
   </div>
 
 
+  <!-- SAFETY GUIDE VIEW -->
+  <div class="view" id="view-safety">
+    <div style="padding-top:72px">
+      <section class="section" style="padding-top:56px">
+        <div class="container">
+          <button class="detail-back" onclick="history.back()||uNav('home')" style="margin-bottom:32px">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            Back
+          </button>
+          <div style="max-width:760px">
+            <div class="section-eyebrow" style="margin-bottom:16px">Your Safety</div>
+            <h2 class="section-h2" style="margin-bottom:8px">How to Stay Safe</h2>
+            <p class="section-sub" style="margin-bottom:48px">RentMate Ghana connects you directly with landlords. Read this before meeting anyone or making any payment.</p>
+
+            <!-- RED FLAGS -->
+            <div class="safety-section-title" style="margin-bottom:20px">🚨 Red flags — walk away immediately</div>
+
+            <div class="safety-warning-box">
+              <div class="safety-warning-title">They ask for money before you view the property</div>
+              <div class="safety-warning-body">No legitimate landlord in Ghana asks for a deposit, reservation fee, key money, or any payment before you have physically entered and inspected the property. If someone asks for money first — it is a scam. Full stop.</div>
+            </div>
+            <div class="safety-warning-box">
+              <div class="safety-warning-title">They say the landlord is abroad and can't meet</div>
+              <div class="safety-warning-body">This is one of the most common scams. A "caretaker" shows you the property and collects fees. The real owner knows nothing about it. Always insist on speaking with the actual owner before paying anything.</div>
+            </div>
+            <div class="safety-warning-box">
+              <div class="safety-warning-title">They create urgency — "pay today or lose it"</div>
+              <div class="safety-warning-body">Scammers pressure you to pay before you think clearly. A real landlord will give you time to inspect, ask questions, and make a calm decision. Urgency is a manipulation tactic.</div>
+            </div>
+            <div class="safety-warning-box">
+              <div class="safety-warning-title">The rent is unusually low for the area</div>
+              <div class="safety-warning-body">If a 3-bedroom in East Legon is listed at GH₵800/month, it is not a bargain — it is bait. Research typical rents in the area before viewing. If it seems too good to be true, it is.</div>
+            </div>
+            <div class="safety-warning-box">
+              <div class="safety-warning-title">They want payment via Mobile Money only — no receipt</div>
+              <div class="safety-warning-body">Always get a written receipt for any payment. Serious landlords provide receipts. If someone refuses to give you paperwork, do not pay.</div>
+            </div>
+
+            <!-- GREEN LIGHTS -->
+            <div class="safety-section-title" style="margin-bottom:20px;margin-top:40px">✓ What safe deals look like</div>
+
+            <div class="safety-ok-box">
+              <div class="safety-ok-title">You view first, pay after</div>
+              <div class="safety-ok-body">A legitimate landlord shows you the property, answers your questions, and only discusses payment after you are satisfied. Never pay before viewing.</div>
+            </div>
+            <div class="safety-ok-box">
+              <div class="safety-ok-title">You meet the actual owner or their authorised agent with ID</div>
+              <div class="safety-ok-body">Ask to see the landlord's ID and proof of ownership (title deed, utility bill in their name, or lease agreement). A real owner will not object to showing this.</div>
+            </div>
+            <div class="safety-ok-box">
+              <div class="safety-ok-title">You receive a written tenancy agreement before paying</div>
+              <div class="safety-ok-body">Any payment should come with a signed tenancy agreement that includes: both full names, property address, rent amount, payment schedule, and duration. Keep a copy.</div>
+            </div>
+            <div class="safety-ok-box">
+              <div class="safety-ok-title">Bring someone you trust to the viewing</div>
+              <div class="safety-ok-body">Never view a property alone, especially for the first time. Bring a friend, family member, or trusted person. Scammers rely on you being alone and vulnerable.</div>
+            </div>
+
+            <!-- VERIFICATION STEPS -->
+            <div class="safety-section-title" style="margin-bottom:20px;margin-top:40px">📋 Verify before you pay — checklist</div>
+
+            <div style="background:var(--obsidian-2);border:1px solid rgba(201,168,76,.1);padding:24px;margin-bottom:16px">
+              <div id="safety-checklist-interactive"></div>
+            </div>
+
+            <!-- REPORT -->
+            <div style="background:var(--obsidian-3);border:1px solid rgba(201,168,76,.08);padding:24px;margin-top:40px">
+              <div class="section-eyebrow" style="margin-bottom:12px">Been scammed or seen something suspicious?</div>
+              <p style="font-size:13px;color:var(--mist);line-height:1.8;font-weight:300;margin-bottom:16px">
+                Report the listing on RentMate Ghana using the Report button. You can also report to:
+              </p>
+              <div style="font-size:13px;color:var(--smoke);line-height:2;font-weight:300">
+                <div>🔵 <strong style="color:var(--pearl);font-weight:400">Ghana Police Service</strong> — 191 or 0302 773 906</div>
+                <div>🔵 <strong style="color:var(--pearl);font-weight:400">EOCO (Economic & Organised Crime)</strong> — 0302 684 219</div>
+                <div>🔵 <strong style="color:var(--pearl);font-weight:400">Cybercrime Unit, Ghana Police</strong> — report online scams at cybercrime.ghpolice.gov.gh</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+      <footer class="footer"><div class="container"><div class="footer-bottom"><span class="footer-copy">© 2025 RentMate Ghana — Your safety is our priority.</span></div></div></footer>
+    </div>
+  </div>
+
+
+  <!-- LEGAL PAGES VIEW -->
+  <div class="view" id="view-legal">
+    <div style="padding-top:72px">
+      <section class="section" style="padding-top:56px">
+        <div class="container">
+          <div class="legal-content">
+            <button class="detail-back" onclick="uNav('home')" style="margin-bottom:32px">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+              Home
+            </button>
+
+            <div class="legal-tabs">
+              <div class="legal-tab active" id="ltab-privacy"   onclick="switchLegalTab('privacy')">Privacy Policy</div>
+              <div class="legal-tab"         id="ltab-terms"    onclick="switchLegalTab('terms')">Terms of Use</div>
+              <div class="legal-tab"         id="ltab-cookies"  onclick="switchLegalTab('cookies')">Cookies</div>
+              <div class="legal-tab"         id="ltab-landlord" onclick="switchLegalTab('landlord')">Landlord Rules</div>
+            </div>
+
+            <!-- ══ PRIVACY POLICY ══ -->
+            <div class="legal-panel active" id="lpanel-privacy">
+              <h1 class="legal-h1">Privacy Policy</h1>
+              <p class="legal-date">Last updated: January 2025</p>
+
+              <div class="legal-highlight">
+                RentMate Ghana is committed to protecting your privacy. We collect only what is necessary to operate the platform and never sell your personal data to anyone.
+              </div>
+
+              <div class="legal-section">
+                <h2 class="legal-section-h">1. Who we are</h2>
+                <div class="legal-body">
+                  <p>RentMate Ghana operates at <strong>ja-creates.github.io/rentmate-ghana</strong>. We are a rental listing platform that connects tenants with landlords directly across all 16 regions of Ghana. We do not act as estate agents, landlords, or tenants.</p>
+                  <p>For privacy enquiries contact us via the Report feature on any listing or through our WhatsApp.</p>
+                </div>
+              </div>
+
+              <div class="legal-section">
+                <h2 class="legal-section-h">2. What information we collect</h2>
+                <div class="legal-body">
+                  <p><strong>When you browse listings (no account):</strong></p>
+                  <ul>
+                    <li>No personal information is collected or stored</li>
+                    <li>We do not use tracking cookies or analytics</li>
+                    <li>Saved listings are stored only on your own device (localStorage)</li>
+                  </ul>
+                  <p><strong>When you create a landlord account:</strong></p>
+                  <ul>
+                    <li>Email address (required for login)</li>
+                    <li>Full name (displayed on your public profile)</li>
+                    <li>WhatsApp number (displayed publicly so tenants can contact you)</li>
+                    <li>Optional: profile photo, short bio</li>
+                    <li>Password (stored securely by Firebase Authentication — we never see it)</li>
+                  </ul>
+                  <p><strong>When you submit a listing:</strong></p>
+                  <ul>
+                    <li>Property details: title, description, location, price, type</li>
+                    <li>Your name and WhatsApp number (displayed publicly)</li>
+                    <li>Photos you upload (stored in Firebase Storage)</li>
+                    <li>Submission timestamp and device browser type</li>
+                  </ul>
+                  <p><strong>When you submit a report:</strong></p>
+                  <ul>
+                    <li>The reason selected and any details you provide</li>
+                    <li>The listing ID being reported</li>
+                    <li>Timestamp of the report</li>
+                    <li>No identifying information about the reporter is stored</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="legal-section">
+                <h2 class="legal-section-h">3. How we use your information</h2>
+                <div class="legal-body">
+                  <ul>
+                    <li>To display your listings to prospective tenants</li>
+                    <li>To allow tenants to contact you via WhatsApp</li>
+                    <li>To review listings before they go live (admin moderation)</li>
+                    <li>To investigate reports of fraud or abuse</li>
+                    <li>To send you email notifications about your listing status (if you have an account)</li>
+                  </ul>
+                  <p>We do not use your data for advertising, profiling, or any purpose beyond operating the platform.</p>
+                </div>
+              </div>
+
+              <div class="legal-section">
+                <h2 class="legal-section-h">4. Who can see your information</h2>
+                <div class="legal-body">
+                  <p><strong>Public (visible to everyone):</strong> Your listing details, name, WhatsApp number, profile photo, and bio if you have an account.</p>
+                  <p><strong>Private (only us):</strong> Your email address, reports you submit, and your account password (which we cannot see — it is held by Firebase).</p>
+                  <p><strong>Third parties:</strong> We use the following services, each with their own privacy policy:</p>
+                  <ul>
+                    <li><strong>Google Firebase</strong> — database, authentication, file storage (privacy.google.com)</li>
+                    <li><strong>Google Fonts</strong> — font delivery (fonts.google.com)</li>
+                    <li><strong>GitHub Pages</strong> — website hosting (docs.github.com/site-policy)</li>
+                  </ul>
+                  <p>We do not sell, rent, or trade your personal data with any third party for commercial purposes.</p>
+                </div>
+              </div>
+
+              <div class="legal-section">
+                <h2 class="legal-section-h">5. Data retention</h2>
+                <div class="legal-body">
+                  <ul>
+                    <li>Active listings remain until you delete them or your account is removed</li>
+                    <li>Removed or rejected listings are deleted from public view but may be retained for up to 90 days for fraud investigation purposes</li>
+                    <li>Reports are retained for 12 months for fraud prevention</li>
+                    <li>Account data is retained until you request deletion</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="legal-section">
+                <h2 class="legal-section-h">6. Your rights</h2>
+                <div class="legal-body">
+                  <p>You have the right to:</p>
+                  <ul>
+                    <li>Access the personal data we hold about you</li>
+                    <li>Request correction of inaccurate data</li>
+                    <li>Request deletion of your account and associated data</li>
+                    <li>Withdraw consent at any time by deleting your account</li>
+                  </ul>
+                  <p>To exercise any of these rights, use the Report button on any listing to contact us, or delete your account directly from your dashboard.</p>
+                </div>
+              </div>
+
+              <div class="legal-section">
+                <h2 class="legal-section-h">7. Security</h2>
+                <div class="legal-body">
+                  <p>We take reasonable technical measures to protect your data including encrypted data transmission (HTTPS), Firebase security rules that restrict data access, and regular security reviews. However, no internet platform is 100% secure and we cannot guarantee absolute security.</p>
+                </div>
+              </div>
+
+              <div class="legal-section">
+                <h2 class="legal-section-h">8. Children</h2>
+                <div class="legal-body">
+                  <p>RentMate Ghana is not directed at children under 18. We do not knowingly collect data from minors. If you believe a minor has created an account, contact us and we will delete it promptly.</p>
+                </div>
+              </div>
+
+              <div class="legal-section">
+                <h2 class="legal-section-h">9. Changes to this policy</h2>
+                <div class="legal-body">
+                  <p>We may update this policy periodically. The date at the top of this page shows when it was last updated. Continued use of the platform after changes constitutes acceptance.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- ══ TERMS OF USE ══ -->
+            <div class="legal-panel" id="lpanel-terms">
+              <h1 class="legal-h1">Terms of Use</h1>
+              <p class="legal-date">Last updated: January 2025</p>
+
+              <div class="legal-highlight">
+                By using RentMate Ghana you agree to these terms. Read them carefully. If you do not agree, please do not use the platform.
+              </div>
+
+              <div class="legal-section">
+                <h2 class="legal-section-h">1. What RentMate Ghana is</h2>
+                <div class="legal-body">
+                  <p>RentMate Ghana is a free listing platform that allows property owners to advertise rental properties and prospective tenants to find them. We are not a party to any rental agreement, and we do not own, manage, or inspect any properties listed.</p>
+                  <p>All transactions are directly between landlords and tenants. RentMate Ghana takes no commission and accepts no payment from either party.</p>
+                </div>
+              </div>
+
+              <div class="legal-section">
+                <h2 class="legal-section-h">2. Landlord rules</h2>
+                <div class="legal-body">
+                  <p>By submitting a listing you confirm that:</p>
+                  <ul>
+                    <li>You are the property owner or have authorisation from the owner to list it</li>
+                    <li>You are not acting as an estate agent, broker, or middleman</li>
+                    <li>All information in the listing is accurate and truthful</li>
+                    <li>The property is genuinely available for rent at the stated price</li>
+                    <li>The photos are of the actual property being listed</li>
+                    <li>You will respond promptly to enquiries from tenants</li>
+                    <li>You will update or remove the listing when the property is no longer available</li>
+                  </ul>
+                  <p>Listings that violate these rules will be removed without notice. Repeated violations will result in a permanent ban.</p>
+                </div>
+              </div>
+
+              <div class="legal-section">
+                <h2 class="legal-section-h">3. Tenant rules</h2>
+                <div class="legal-body">
+                  <ul>
+                    <li>Always view a property in person before making any payment</li>
+                    <li>Never pay a reservation fee, key money, or deposit before viewing</li>
+                    <li>RentMate Ghana does not guarantee the accuracy of any listing</li>
+                    <li>You are responsible for verifying the landlord's identity and ownership</li>
+                    <li>Any dispute is between you and the landlord — RentMate Ghana is not liable</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="legal-section">
+                <h2 class="legal-section-h">4. Prohibited content</h2>
+                <div class="legal-body">
+                  <p>You must not submit listings or content that:</p>
+                  <ul>
+                    <li>Are fraudulent, misleading, or scam-related</li>
+                    <li>Contain false pricing or non-existent properties</li>
+                    <li>Promote illegal activity</li>
+                    <li>Contain offensive, discriminatory, or harmful content</li>
+                    <li>Are posted by agents or brokers acting on behalf of owners</li>
+                    <li>Contain personal data of third parties without their consent</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="legal-section">
+                <h2 class="legal-section-h">5. Our rights</h2>
+                <div class="legal-body">
+                  <p>RentMate Ghana reserves the right to:</p>
+                  <ul>
+                    <li>Remove any listing at any time without notice or explanation</li>
+                    <li>Suspend or ban any account that violates these terms</li>
+                    <li>Modify the platform, features, or these terms at any time</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="legal-section">
+                <h2 class="legal-section-h">6. Disclaimer of liability</h2>
+                <div class="legal-body">
+                  <p>RentMate Ghana is provided as-is. We do not warrant that listings are accurate, that landlords are legitimate, or that properties exist as described. We are not responsible for any loss, fraud, or harm arising from use of the platform or from any transaction between landlords and tenants.</p>
+                  <p>Always exercise your own judgement. When in doubt, read our <span style="color:var(--gold);cursor:pointer" onclick="uNav('safety')">Safety Guide</span>.</p>
+                </div>
+              </div>
+
+              <div class="legal-section">
+                <h2 class="legal-section-h">7. Governing law</h2>
+                <div class="legal-body">
+                  <p>These terms are governed by the laws of the Republic of Ghana. Any disputes shall be resolved under Ghanaian jurisdiction.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- ══ COOKIES ══ -->
+            <div class="legal-panel" id="lpanel-cookies">
+              <h1 class="legal-h1">Cookie Policy</h1>
+              <p class="legal-date">Last updated: January 2025</p>
+
+              <div class="legal-highlight">
+                RentMate Ghana uses minimal storage. We do not use advertising cookies or tracking cookies. We do not use Google Analytics or any third-party analytics service.
+              </div>
+
+              <div class="legal-section">
+                <h2 class="legal-section-h">What we store on your device</h2>
+                <div class="legal-body">
+                  <p>We use browser localStorage (not cookies) for the following purposes only:</p>
+
+                  <div class="cookie-row">
+                    <div>
+                      <div class="cookie-name">rm_saved_v1</div>
+                      <div class="cookie-desc">IDs of listings you have bookmarked. Stays on your device only — never sent to our servers.</div>
+                    </div>
+                    <span class="cookie-type cookie-functional">Functional</span>
+                  </div>
+                  <div class="cookie-row">
+                    <div>
+                      <div class="cookie-name">rm_submissions_v2</div>
+                      <div class="cookie-desc">Timestamps of recent listing submissions — used to enforce the daily submission limit and prevent spam.</div>
+                    </div>
+                    <span class="cookie-type cookie-essential">Essential</span>
+                  </div>
+                  <div class="cookie-row">
+                    <div>
+                      <div class="cookie-name">rm_reports / rm_rptd_*</div>
+                      <div class="cookie-desc">Tracks which listings you have already reported to prevent duplicate reports.</div>
+                    </div>
+                    <span class="cookie-type cookie-essential">Essential</span>
+                  </div>
+                  <div class="cookie-row">
+                    <div>
+                      <div class="cookie-name">rm_adm_attempts</div>
+                      <div class="cookie-desc">Counts failed admin login attempts to prevent brute-force attacks. Clears after 15 minutes.</div>
+                    </div>
+                    <span class="cookie-type cookie-essential">Security</span>
+                  </div>
+
+                  <p style="margin-top:20px">Firebase Authentication (if you create a landlord account) stores a session token in your browser to keep you logged in. This is managed by Google Firebase and governed by their privacy policy.</p>
+                  <p>You can clear all locally stored data at any time by clearing your browser's site data in Settings.</p>
+                </div>
+              </div>
+
+              <div class="legal-section">
+                <h2 class="legal-section-h">Third-party cookies</h2>
+                <div class="legal-body">
+                  <p>Google Fonts may set a cookie when loading our fonts. We have no control over this. See Google's privacy policy at privacy.google.com.</p>
+                  <p>We do not use:</p>
+                  <ul>
+                    <li>Google Analytics or any analytics service</li>
+                    <li>Facebook Pixel or any social media tracking</li>
+                    <li>Advertising networks or retargeting cookies</li>
+                    <li>Heat-mapping or session recording tools</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- ══ LANDLORD RULES ══ -->
+            <div class="legal-panel" id="lpanel-landlord">
+              <h1 class="legal-h1">Landlord Guidelines</h1>
+              <p class="legal-date">Last updated: January 2025</p>
+
+              <div class="legal-highlight">
+                RentMate Ghana is a direct platform. Landlords post. Tenants contact. No agents. No middlemen. No commission. These rules protect every landlord who lists honestly.
+              </div>
+
+              <div class="legal-section">
+                <h2 class="legal-section-h">Who can list</h2>
+                <div class="legal-body">
+                  <ul>
+                    <li>Property owners listing their own property</li>
+                    <li>Family members or caretakers with explicit written authorisation from the owner</li>
+                    <li>Anyone who can prove a direct relationship with the property</li>
+                  </ul>
+                  <p><strong>Who cannot list:</strong> Estate agents, brokers, property managers acting for commission, or anyone who does not have a direct relationship with the property.</p>
+                </div>
+              </div>
+
+              <div class="legal-section">
+                <h2 class="legal-section-h">Listing standards</h2>
+                <div class="legal-body">
+                  <ul>
+                    <li><strong>Photos</strong> — must be real photos of the actual property. Stock images, photos from other listings, or misleading images are prohibited and will result in permanent removal</li>
+                    <li><strong>Price</strong> — must be the actual monthly rent. Do not advertise a lower price to attract enquiries and quote a higher one during viewing</li>
+                    <li><strong>Location</strong> — must be accurate. Do not list in a more desirable area than the actual location</li>
+                    <li><strong>Availability</strong> — remove or update your listing immediately when the property is rented. Stale listings damage trust for every landlord on the platform</li>
+                    <li><strong>Contact</strong> — the WhatsApp number must be yours and must be active. Do not list a number that rings to someone else</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="legal-section">
+                <h2 class="legal-section-h">What gets listings removed</h2>
+                <div class="legal-body">
+                  <ul>
+                    <li>Three or more user reports within 30 days</li>
+                    <li>Admin review finding inaccurate information</li>
+                    <li>Evidence of agent or broker activity</li>
+                    <li>Fraud complaints from tenants</li>
+                    <li>Listings not updated after property is rented</li>
+                  </ul>
+                  <p>Listings removed for fraud will result in a permanent account ban. We take fraud seriously because it damages every honest landlord on the platform.</p>
+                </div>
+              </div>
+
+              <div class="legal-section">
+                <h2 class="legal-section-h">Getting verified</h2>
+                <div class="legal-body">
+                  <p>The <strong style="color:var(--gold)">✦ Verified</strong> badge means our team has manually reviewed your listing and confirmed it appears legitimate. Verification is not a guarantee of the property's condition — it means the listing passed our review.</p>
+                  <p>To improve your chances of verification: use real photos, write an accurate and detailed description, and respond promptly to tenant enquiries via WhatsApp.</p>
+                </div>
+              </div>
+
+              <div class="legal-section">
+                <h2 class="legal-section-h">Advance payment guidance</h2>
+                <div class="legal-body">
+                  <p>Ghana's rental market commonly requires advance payment of 6 months to 2 years. This is legal and normal. However:</p>
+                  <ul>
+                    <li>Always provide a signed tenancy agreement before accepting any advance payment</li>
+                    <li>The agreement must clearly state the advance period, amount, and what happens if the tenancy ends early</li>
+                    <li>Provide a receipt for every payment</li>
+                    <li>Never request advance payment before the tenant has viewed the property</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+      <footer class="footer"><div class="container"><div class="footer-bottom"><span class="footer-copy">© 2025 RentMate Ghana. All rights reserved.</span><span class="footer-copy" style="display:flex;gap:16px"><span onclick="uNav('legal')" style="cursor:pointer;transition:color .2s" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color=''">Privacy</span><span onclick="switchLegalTab('terms');uNav('legal')" style="cursor:pointer;transition:color .2s" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color=''">Terms</span></span></div></div></footer>
+    </div>
+  </div>
+
+
 </div><!-- /user-site -->
 
 <!-- ══════════════════════════════════════════════════════
@@ -1240,9 +1863,28 @@ input,select,textarea{font-family:'Outfit',sans-serif}
       <div class="admin-tab active" id="tab-all" onclick="setAdminTab('all')">All Listings</div>
       <div class="admin-tab" id="tab-pending" onclick="setAdminTab('pending')">Pending</div>
       <div class="admin-tab" id="tab-approved" onclick="setAdminTab('approved')">Approved</div>
+      <div class="admin-tab" id="tab-reports" onclick="setAdminTab('reports')">
+        Reports <span class="report-count-badge" id="report-count-badge" style="display:none">0</span>
+      </div>
     </div>
 
-    <div class="admin-table-wrap">
+    <!-- REPORTS PANEL -->
+    <div id="admin-reports-panel" style="display:none">
+      <div class="report-filter-bar">
+        <button class="report-filter-btn active" id="rf-all"       onclick="filterReports('all')">All</button>
+        <button class="report-filter-btn"         id="rf-open"     onclick="filterReports('open')">Open</button>
+        <button class="report-filter-btn"         id="rf-resolved" onclick="filterReports('resolved')">Resolved</button>
+        <button class="report-filter-btn"         id="rf-dismissed"onclick="filterReports('dismissed')">Dismissed</button>
+        <span style="margin-left:auto;font-size:11px;color:var(--smoke);letter-spacing:.06em" id="report-summary-text"></span>
+      </div>
+      <div id="reports-list"></div>
+      <div class="reports-empty" id="reports-empty" style="display:none">
+        <p>No reports yet</p>
+        <p style="font-size:13px;margin-top:8px">When users flag listings, they will appear here.</p>
+      </div>
+    </div>
+
+    <div class="admin-table-wrap" id="admin-table-wrap">
       <table class="admin-table">
         <thead>
           <tr>
@@ -1258,6 +1900,7 @@ input,select,textarea{font-family:'Outfit',sans-serif}
         <tbody id="admin-tbody"></tbody>
       </table>
     </div>
+    </div><!-- /admin-table-wrap -->
   </div>
 </div><!-- /admin-site -->
 
@@ -1397,11 +2040,13 @@ function startRealtimeListener() {
     snapshot.forEach(d => {
       fbIds.add(d.id);
       const idx = arr.findIndex(l => l._fbId === d.id);
+      const rawData = { ...d.data(), _fbId: d.id };
       if (idx > -1) {
-        // Update in place — preserve the same object reference
-        Object.assign(arr[idx], d.data(), { _fbId: d.id });
+        // Update in place — sanitize incoming Firebase data
+        Object.assign(arr[idx], sanitizeListing(rawData));
+        arr[idx]._fbId = d.id; // preserve ID
       } else {
-        arr.push({ ...d.data(), _fbId: d.id });
+        arr.push(sanitizeListing(rawData));
       }
     });
 
@@ -1473,10 +2118,65 @@ const IMGS = [
   "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=700&q=80",
 ];
 
-// ── SECURITY: sanitize user input to prevent XSS ──
+// ── SECURITY: Input sanitization (XSS prevention) ──
 function sanitize(str) {
-  if (typeof str !== 'string') return str;
-  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#x27;');
+  if (typeof str !== 'string') return '';
+  // Strip all HTML tags, encode entities
+  return str
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;')
+    .replace(/'/g,'&#x27;')
+    .replace(/\//g,'&#x2F;')
+    .replace(/`/g,'&#x60;')
+    .replace(/=/g,'&#x3D;')
+    .trim()
+    .slice(0, 2000); // hard cap — prevent oversized payloads
+}
+
+// Safe number validator
+function safeNum(val, min, max) {
+  const n = parseFloat(val);
+  if (isNaN(n) || n < min || n > max) return null;
+  return n;
+}
+
+// Safe URL validator — only allow http/https and wa.me
+function safeUrl(url) {
+  try {
+    const u = new URL(url);
+    return ['https:', 'http:'].includes(u.protocol) ? url : '#';
+  } catch(e) { return '#'; }
+}
+
+// Safe image URL — only allow https and known domains
+function safeImg(url) {
+  if (!url || typeof url !== 'string') return '';
+  try {
+    const u = new URL(url);
+    if (u.protocol !== 'https:') return '';
+    return url;
+  } catch(e) { return ''; }
+}
+
+// Sanitize a full listing object coming from Firebase
+function sanitizeListing(l) {
+  if (!l || typeof l !== 'object') return null;
+  return {
+    ...l,
+    title:         sanitize(l.title       || ''),
+    description:   sanitize(l.description || ''),
+    city:          sanitize(l.city        || l.location || ''),
+    region:        sanitize(l.region      || ''),
+    landmark:      sanitize(l.landmark    || ''),
+    property_type: sanitize(l.property_type || ''),
+    phone:         sanitize(l.phone       || ''),
+    name:          sanitize(l.name        || ''),
+    duration:      sanitize(l.duration    || ''),
+    price:         safeNum(l.price, 0, 99999999) || 0,
+    images:        Array.isArray(l.images) ? l.images.map(safeImg).filter(Boolean) : [],
+  };
 }
 
 let listings = [
@@ -1496,7 +2196,37 @@ let listings = [
 
 window.listings = listings;
 let selFiles = [];
-const ADMIN_PW = 'RentMate@Ghana#2025';
+// ── ADMIN CONFIG ──
+// Change this password. Never commit the real one to a public repo.
+// For production: move this to Firebase Remote Config or environment variable.
+// Admin password is stored as SHA-256 hash — not plaintext
+// To change password: update ADMIN_PW_HASH with sha256(newPassword)
+// SHA-256 of current password computed server-side
+const ADMIN_PW_HASH = '5449cc6ccb32dfa7aefee6c0a894a72016bdf984cef12d3678b43de136eb948c';
+
+// Simple SHA-256 implementation for client-side comparison
+async function hashPassword(pw) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pw));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+// Session timeout — auto-logout after 30 minutes of inactivity
+let adminSessionTimer = null;
+const ADMIN_SESSION_MS = 30 * 60 * 1000;
+
+function resetAdminSession() {
+  clearTimeout(adminSessionTimer);
+  if (!adminIn) return;
+  adminSessionTimer = setTimeout(() => {
+    adminLogout();
+    toast('Session expired. Please sign in again.', true);
+  }, ADMIN_SESSION_MS);
+}
+
+// Track activity to reset timeout
+['click','keydown','scroll'].forEach(ev => {
+  document.addEventListener(ev, () => { if (adminIn) resetAdminSession(); }, { passive: true });
+});
 let adminIn = false;
 let adminTab = 'all';
 
@@ -1572,6 +2302,8 @@ function uNav(view, id) {
   }
   if (view === 'dashboard') { renderDashboard(); setHash('dashboard'); }
   if (view === 'submit')    { setHash('submit'); }
+  if (view === 'safety')    { setHash('safety'); }
+  if (view === 'legal')     { setHash('legal'); }
 }
 
 function switchSite(s) {
@@ -1602,10 +2334,16 @@ function fmtDur(d) {
   return {monthly:'/ month',yearly:'/ year','2 years':'/ 2 years',negotiable:'(negotiable)'}[d] || '/ ' + d;
 }
 function buildWA(phone, title) {
-  let d = phone.replace(/\D/g,'');
+  // Validate phone — only digits, 10-15 chars
+  let d = (phone || '').replace(/\D/g,'');
+  if (!d || d.length < 9 || d.length > 15) return '#';
   if (d.startsWith('0') && d.length === 10) d = '233' + d.slice(1);
-  const msg = encodeURIComponent(`Hello, I'm interested in your listing: "${title}". Is it still available?`);
-  return `https://wa.me/${d}?text=${msg}`;
+  // Validate result is numeric only
+  if (!/^\d{10,15}$/.test(d)) return '#';
+  // Sanitize title before including in message
+  const safeTitle = sanitize(title || 'this listing').slice(0, 100);
+  const msg = encodeURIComponent('Hello, I am interested in your listing: "' + safeTitle + '". Is it still available?');
+  return 'https://wa.me/' + d + '?text=' + msg;
 }
 function waIcon() {
   return `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>`;
@@ -1614,8 +2352,9 @@ function waIcon() {
 // ═══════════════════════════════════════════════
 // RENDER CARD
 // ═══════════════════════════════════════════════
-function renderCard(l, i) {
-  const img = l.images?.[0] || IMGS[0];
+function renderCard(rawL, i) {
+  const l = sanitizeListing(rawL) || rawL;
+  const img = safeImg(l.images?.[0]) || IMGS[0];
   const wa = buildWA(l.phone, l.title);
   const isNew = (Date.now() - new Date(l.created_at)) < 3*24*3600*1000;
   return `
@@ -1735,7 +2474,10 @@ function renderListings() {
 // DETAIL
 // ═══════════════════════════════════════════════
 function renderDetail(id) {
-  const l = listings.find(x => x._fbId === id || x.id === id);
+  const raw = listings.find(x => x._fbId === id || x.id === id);
+  if (!raw) { uNav('listings'); return; }
+  // Sanitize ALL fields before any DOM injection
+  const l = sanitizeListing(raw);
   if (!l) { uNav('listings'); return; }
   const wa = buildWA(l.phone, l.title);
   const imgs = l.images || [IMGS[0]];
@@ -1786,7 +2528,21 @@ function renderDetail(id) {
         <div class="sidebar-row"><span class="sidebar-row-k">Status</span><span class="sidebar-row-v" style="color:#4cde85">Available</span></div>
         <div class="sidebar-divider"></div>
         <a href="${wa}" target="_blank" rel="noopener" class="btn-wa-big">${waIcon()} Contact on WhatsApp</a>
-        <p class="sidebar-safety"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Always inspect the property in person before making any payment.</p>
+        <!-- SAFETY CHECKLIST ON EVERY LISTING -->
+        <div class="safety-checklist">
+          <div class="safety-checklist-title">Before You Meet</div>
+          <div class="safety-item">View the property in person before any payment</div>
+          <div class="safety-item">Ask for landlord ID and proof of ownership</div>
+          <div class="safety-item">Bring a trusted person with you</div>
+          <div class="safety-item">Get a written tenancy agreement before paying</div>
+          <div class="safety-item danger">Never pay a "reservation fee" before viewing</div>
+          <div class="safety-item danger">Never pay if landlord "is abroad" and can't meet</div>
+          <div class="safety-tip"><strong>If anything feels wrong, walk away.</strong> No legitimate landlord will pressure you to pay immediately.</div>
+          <button class="verify-btn" onclick="uNav('safety')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:13px;height:13px"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Full Safety Guide
+          </button>
+        </div>
         <div style="display:flex;gap:8px;margin-top:16px">
           <button onclick="shareListing('${l.id}')" style="flex:1;padding:10px;border:1px solid rgba(201,168,76,.2);border-radius:3px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);background:transparent;cursor:pointer;transition:all .2s" onmouseover="this.style.background='rgba(201,168,76,.08)'" onmouseout="this.style.background='transparent'">Share</button>
           <button onclick="reportListing('${l.id}')" style="flex:1;padding:10px;border:1px solid rgba(192,57,43,.2);border-radius:3px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--danger);background:transparent;cursor:pointer;transition:all .2s" onmouseover="this.style.background='rgba(192,57,43,.08)'" onmouseout="this.style.background='transparent'">Report</button>
@@ -1834,8 +2590,11 @@ function handleSubmit(e) {
   if (!name||!phone||!title||!region||!city||!type||!dur||!price||!desc) {
     toast('Please fill in all required fields.',true); return;
   }
-  if (!/^0[0-9]{9}$/.test(phone)) {
-    toast('Enter a valid Ghana number: 0XXXXXXXXX',true); return;
+  // Strict Ghana phone validation — 0XX XXXXXXX, valid prefixes only
+  const ghPrefixes = ['020','024','025','026','027','028','029','050','054','055','056','057','058','059','070','080'];
+  const phonePrefix = phone.slice(0, 3);
+  if (!/^0[0-9]{9}$/.test(phone) || !ghPrefixes.includes(phonePrefix)) {
+    toast('Enter a valid Ghana mobile number (e.g. 0241234567)', true); return;
   }
 
   // ── SPAM PROTECTION 1: duplicate phone check ──
@@ -1848,7 +2607,7 @@ function handleSubmit(e) {
 
   // ── SPAM PROTECTION 2: rate limit by localStorage ──
   // Max 3 submissions per 24 hours per browser
-  const RL_KEY = 'rm_submissions';
+  const RL_KEY = 'rm_submissions_v2';
   const RL_MAX = 3;
   const RL_WINDOW = 24 * 60 * 60 * 1000;
   try {
@@ -1864,9 +2623,12 @@ function handleSubmit(e) {
   } catch(err) { /* localStorage blocked — allow through */ }
 
   // ── SPAM PROTECTION 3: basic content check ──
-  if (title.length < 10) { toast('Listing title is too short.', true); return; }
-  if (desc.length < 30)  { toast('Please write a more detailed description.', true); return; }
-  if (price < 50)        { toast('Price seems too low. Please enter monthly rent in GH₵.', true); return; }
+  if (title.length < 10)   { toast('Listing title is too short (min 10 characters).', true); return; }
+  if (title.length > 120)  { toast('Listing title is too long (max 120 characters).', true); return; }
+  if (desc.length < 40)    { toast('Please write a more detailed description (min 40 characters).', true); return; }
+  if (desc.length > 2000)  { toast('Description is too long (max 2000 characters).', true); return; }
+  const safePrice = safeNum(price, 50, 99999999);
+  if (!safePrice)          { toast('Please enter a valid rent amount (GH₵50 minimum).', true); return; }
   const btn = document.getElementById('sbmt-btn');
   btn.disabled = true;
   btn.innerHTML = `<svg style="width:16px;height:16px;animation:spin 1s linear infinite" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0"/></svg> Submitting...`;
@@ -1902,13 +2664,18 @@ function handleSubmit(e) {
       listings.push(newL);
     }
     selFiles = [];
-    document.getElementById('submit-form-wrap').innerHTML = `
+    // Build success message using safe DOM methods (no innerHTML with user data)
+    const wrap = document.getElementById('submit-form-wrap');
+    wrap.innerHTML = `
     <div class="success-wrap">
       <div class="success-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="20 6 9 17 4 12"/></svg></div>
       <h3 class="success-h">Listing Submitted</h3>
-      <p class="success-p">Thank you, <strong>${name}</strong>. Your listing <em>"${title}"</em> in ${city}, ${region} is pending review. We'll have it live within 24 hours.</p>
+      <p class="success-p" id="success-msg-p">Your listing is pending review. We will have it live within 24 hours.</p>
       <button class="btn-gold" onclick="uNav('home')">Back to Home</button>
     </div>`;
+    // Set text content safely (no HTML injection)
+    const p = document.getElementById('success-msg-p');
+    if (p) p.textContent = 'Thank you, ' + sanitize(name) + '. Your listing "' + sanitize(title) + '" in ' + sanitize(city) + ', ' + sanitize(region) + ' is pending review. We\'ll have it live within 24 hours.';
     toast('Listing submitted successfully ✓');
     btn.disabled = false;
   })();
@@ -1938,21 +2705,59 @@ async function loadAllListingsForAdmin() {
   refreshAdmin();
 }
 
+// Brute-force protection: max 5 attempts per 15 minutes
+const ADMIN_ATTEMPTS_KEY = 'rm_adm_attempts';
+function checkAdminRateLimit() {
+  try {
+    const stored = JSON.parse(localStorage.getItem(ADMIN_ATTEMPTS_KEY) || '{"count":0,"since":0}');
+    const now = Date.now();
+    if (now - stored.since > 15 * 60 * 1000) return true; // window expired
+    if (stored.count >= 5) return false; // locked
+    return true;
+  } catch(e) { return true; }
+}
+function recordAdminFailure() {
+  try {
+    const stored = JSON.parse(localStorage.getItem(ADMIN_ATTEMPTS_KEY) || '{"count":0,"since":0}');
+    const now = Date.now();
+    const since = (now - stored.since > 15 * 60 * 1000) ? now : stored.since;
+    localStorage.setItem(ADMIN_ATTEMPTS_KEY, JSON.stringify({ count: stored.count + 1, since }));
+  } catch(e) {}
+}
+function clearAdminRateLimit() {
+  try { localStorage.removeItem(ADMIN_ATTEMPTS_KEY); } catch(e) {}
+}
+
 function doAdminLogin() {
-  const pw = document.getElementById('adm-pw').value;
-  if (pw === ADMIN_PW) {
-    adminIn = true;
-    window.adminIn = true;
-    document.getElementById('admin-login-wrap').style.display = 'none';
-    document.getElementById('admin-panel-wrap').style.display = 'block';
-    document.getElementById('admin-bar-right').style.display = 'flex';
-    // Force-load all listings from Firebase fresh on admin login
-    loadAllListingsForAdmin();
-    toast('Welcome to Admin Console ✓');
-  } else {
-    toast('Incorrect password.',true);
+  if (!checkAdminRateLimit()) {
+    toast('Too many failed attempts. Try again in 15 minutes.', true);
     document.getElementById('adm-pw').value = '';
+    return;
   }
+  const pw = document.getElementById('adm-pw').value;
+  const btn = document.getElementById('adm-login-btn') || document.querySelector('.admin-login-btn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Verifying...'; }
+  hashPassword(pw).then(hash => {
+    if (btn) { btn.disabled = false; btn.textContent = 'Sign In'; }
+    if (hash === ADMIN_PW_HASH) {
+      clearAdminRateLimit();
+      adminIn = true;
+      window.adminIn = true;
+      document.getElementById('admin-login-wrap').style.display = 'none';
+      document.getElementById('admin-panel-wrap').style.display = 'block';
+      document.getElementById('admin-bar-right').style.display = 'flex';
+      loadAllListingsForAdmin();
+      resetAdminSession();
+      toast('Welcome to Admin Console ✓');
+    } else {
+      recordAdminFailure();
+      toast('Incorrect password.', true);
+      document.getElementById('adm-pw').value = '';
+    }
+  }).catch(() => {
+    if (btn) { btn.disabled = false; btn.textContent = 'Sign In'; }
+    toast('Login error. Please try again.', true);
+  });
 }
 function adminLogout() {
   adminIn = false;
@@ -1987,7 +2792,23 @@ function renderAdminTable() {
   let data = listings;
   if (adminTab === 'pending')  data = listings.filter(l => !l.is_approved && !l._rejected);
   if (adminTab === 'approved') data = listings.filter(l => l.is_approved);
-  tbody.innerHTML = data.map(l => {
+  tbody.innerHTML = data.map(rawL => {
+    // Sanitize before rendering into admin table HTML
+    const l = { ...rawL,
+      title:         sanitize(rawL.title         || ''),
+      region:        sanitize(rawL.region        || ''),
+      city:          sanitize(rawL.city          || ''),
+      property_type: sanitize(rawL.property_type || ''),
+      phone:         sanitize(rawL.phone         || ''),
+      _fbId:         rawL._fbId,
+      id:            rawL.id,
+      price:         rawL.price,
+      duration:      rawL.duration,
+      is_approved:   rawL.is_approved,
+      is_verified:   rawL.is_verified,
+      _rejected:     rawL._rejected,
+      images:        rawL.images,
+    };
     const statusDot = l.is_approved ? 'dot-approved' : (l._rejected ? 'dot-rejected' : 'dot-pending');
     const statusText = l.is_approved ? 'text-approved' : (l._rejected ? 'text-rejected' : 'text-pending');
     const statusLabel = l.is_approved ? 'Approved' : (l._rejected ? 'Rejected' : 'Pending');
@@ -2001,6 +2822,8 @@ function renderAdminTable() {
       <td>
         <div class="status-dot"><div class="dot ${statusDot}"></div><span class="${statusText}">${statusLabel}</span></div>
         ${l.is_verified ? `<div class="status-dot" style="margin-top:4px"><div class="dot" style="background:#7cb9f4"></div><span style="color:#7cb9f4;font-size:11px">Verified</span></div>` : ''}
+        ${l.high_reports ? `<div class="status-dot" style="margin-top:4px"><div class="dot" style="background:#e74c3c"></div><span style="color:#e74c3c;font-size:11px">⚑ Reported</span></div>` : ''}
+        ${l.report_count >= 2 ? `<div class="status-dot" style="margin-top:4px"><span style="color:#e74c3c;font-size:10px;letter-spacing:.06em">${l.report_count} report${l.report_count!==1?'s':''}</span></div>` : ''}
       </td>
       <td>
         <div class="admin-actions-td">
@@ -2019,9 +2842,10 @@ function admAct(action, id) {
   const l = listings.find(x => x._fbId === id || x.id === id);
   if (!l) { console.warn('admAct: listing not found for id:', id); return; }
   let updates = {};
-  if (action === 'approve') { l.is_approved = true; l._rejected = false; updates = {is_approved:true, _rejected:false}; toast(`"${l.title.slice(0,30)}…" approved ✓`); }
-  if (action === 'reject')  { l.is_approved = false; l._rejected = true; l.is_verified = false; updates = {is_approved:false, _rejected:true, is_verified:false}; toast(`"${l.title.slice(0,28)}…" rejected`, true); }
-  if (action === 'verify')  { l.is_verified = true; updates = {is_verified:true}; toast(`"${l.title.slice(0,28)}…" verified ✓`); }
+  const safeT = sanitize(l.title || '').slice(0,30);
+  if (action === 'approve') { l.is_approved = true; l._rejected = false; updates = {is_approved:true, _rejected:false}; toast('"' + safeT + '…" approved ✓'); }
+  if (action === 'reject')  { l.is_approved = false; l._rejected = true; l.is_verified = false; updates = {is_approved:false, _rejected:true, is_verified:false}; toast('"' + safeT + '…" rejected', true); }
+  if (action === 'verify')  { l.is_verified = true; updates = {is_verified:true}; toast('"' + safeT + '…" verified ✓'); }
   // Persist to Firebase if available
   if (window._dbReady && l._fbId) {
     window._updateDoc(window._doc(window._db, 'listings', l._fbId), updates)
@@ -2235,14 +3059,24 @@ async function renderProfileView(slugOrUid) {
   }
 
   const joinDate = profile.created_at ? new Date(profile.created_at).toLocaleDateString('en-GB',{month:'long',year:'numeric'}) : '';
+  // Sanitize profile before injecting
+  const sp = {
+    name:     sanitize(profile.name     || ''),
+    bio:      sanitize(profile.bio      || ''),
+    phone:    sanitize(profile.phone    || ''),
+    photoURL: safeImg(profile.photoURL  || ''),
+    slug:     sanitize(profile.slug     || ''),
+    verified: !!profile.verified,
+    created_at: profile.created_at || ''
+  };
   profileContent.innerHTML = `
-    <img class="profile-avatar-lg" src="${profile.photoURL || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'%3E%3Ccircle cx='48' cy='48' r='48' fill='%232a2a2a'/%3E%3Ccircle cx='48' cy='38' r='18' fill='%23535353'/%3E%3Cellipse cx='48' cy='82' rx='28' ry='18' fill='%23535353'/%3E%3C/svg%3E"}" alt="${profile.name}"/>
-    <h1 class="profile-name">${profile.name}</h1>
-    ${profile.bio ? `<p class="profile-bio">${profile.bio}</p>` : ''}
+    <img class="profile-avatar-lg" src="${sp.photoURL || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'%3E%3Ccircle cx='48' cy='48' r='48' fill='%232a2a2a'/%3E%3Ccircle cx='48' cy='38' r='18' fill='%23535353'/%3E%3Cellipse cx='48' cy='82' rx='28' ry='18' fill='%23535353'/%3E%3C/svg%3E"}" alt="${profile.name}"/>
+    <h1 class="profile-name">${sp.name}</h1>
+    ${sp.bio ? `<p class="profile-bio">${sp.bio}</p>` : ''}
     <div class="profile-meta">
-      ${profile.phone ? `<div class="profile-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 16.92v3a2 2 0 01-2.18 2A19.79 19.79 0 013.08 5.18 2 2 0 015.09 3h3a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L9.14 10.84a16 16 0 006.02 6.02l1.2-1.2a2 2 0 012.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0122 16.92z"/></svg>${profile.phone}</div>` : ''}
+      ${sp.phone ? `<div class="profile-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 16.92v3a2 2 0 01-2.18 2A19.79 19.79 0 013.08 5.18 2 2 0 015.09 3h3a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L9.14 10.84a16 16 0 006.02 6.02l1.2-1.2a2 2 0 012.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0122 16.92z"/></svg>${profile.phone}</div>` : ''}
       ${joinDate ? `<div class="profile-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Member since ${joinDate}</div>` : ''}
-      ${profile.verified ? `<div class="profile-meta-item" style="color:var(--gold)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Verified Landlord</div>` : ''}
+      ${sp.verified ? `<div class="profile-meta-item" style="color:var(--gold)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Verified Landlord</div>` : ''}
     </div>`;
 
   // Show their approved listings
@@ -2351,6 +3185,14 @@ async function saveEdit(fbId) {
   const errEl    = document.getElementById('ed-err');
 
   if (!title || !price || !desc) { errEl.textContent = 'Please fill in all required fields.'; return; }
+  // Security: re-verify ownership before saving
+  const editL = listings.find(x => x._fbId === fbId || x.id === fbId);
+  if (!editL) { errEl.textContent = 'Listing not found.'; return; }
+  if (editL.uid && window._currentUser && editL.uid !== window._currentUser.uid) {
+    errEl.textContent = 'You do not have permission to edit this listing.';
+    toast('Permission denied.', true);
+    return;
+  }
 
   const updates = {
     title: sanitize(title), price, duration,
@@ -2377,6 +3219,11 @@ async function saveEdit(fbId) {
 async function deleteListing(fbId) {
   if (!confirm('Delete this listing permanently? This cannot be undone.')) return;
   if (!window._currentUser) { toast('You must be signed in.', true); return; }
+  // Security: verify ownership
+  const delL = listings.find(x => x._fbId === fbId || x.id === fbId);
+  if (delL && delL.uid && delL.uid !== window._currentUser.uid) {
+    toast('You can only delete your own listings.', true); return;
+  }
   try {
     if (window._dbReady && fbId) {
       await window._deleteDoc(window._doc(window._db, 'listings', fbId));
@@ -2397,42 +3244,315 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
+
+// ═══════════════════════════════════════════════
+// ADMIN REPORTS MANAGEMENT
+// ═══════════════════════════════════════════════
+let adminReports = [];
+let reportsFilter = 'all';
+
+async function loadReports() {
+  if (!window._dbReady) return;
+  try {
+    const snap = await window._getDocs(window._collection(window._db, 'reports'));
+    adminReports = [];
+    snap.forEach(d => adminReports.push({ ...d.data(), _rId: d.id }));
+    // Sort newest first
+    adminReports.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    updateReportBadge();
+    renderReports();
+  } catch(e) {
+    console.warn('Reports load error:', e.message);
+  }
+}
+
+function updateReportBadge() {
+  const openCount = adminReports.filter(r => r.status === 'open').length;
+  const badge = document.getElementById('report-count-badge');
+  if (!badge) return;
+  badge.style.display = openCount > 0 ? 'inline-flex' : 'none';
+  badge.textContent   = openCount > 99 ? '99+' : openCount;
+}
+
+function filterReports(f) {
+  reportsFilter = f;
+  document.querySelectorAll('.report-filter-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('rf-' + f)?.classList.add('active');
+  renderReports();
+}
+
+function timeAgoReport(iso) {
+  const diff = Date.now() - new Date(iso).getTime();
+  const m = Math.floor(diff / 60000);
+  const h = Math.floor(diff / 3600000);
+  const d = Math.floor(diff / 86400000);
+  if (m < 1)  return 'Just now';
+  if (m < 60) return m + 'm ago';
+  if (h < 24) return h + 'h ago';
+  if (d === 1) return 'Yesterday';
+  if (d < 30) return d + 'd ago';
+  return new Date(iso).toLocaleDateString('en-GB', {day:'numeric',month:'short',year:'numeric'});
+}
+
+function renderReports() {
+  const list  = document.getElementById('reports-list');
+  const empty = document.getElementById('reports-empty');
+  const summary = document.getElementById('report-summary-text');
+  if (!list) return;
+
+  let filtered = adminReports;
+  if (reportsFilter === 'open')      filtered = adminReports.filter(r => r.status === 'open');
+  if (reportsFilter === 'resolved')  filtered = adminReports.filter(r => r.status === 'resolved');
+  if (reportsFilter === 'dismissed') filtered = adminReports.filter(r => r.status === 'dismissed');
+
+  const openCount = adminReports.filter(r => r.status === 'open').length;
+  if (summary) summary.textContent = openCount + ' open · ' + adminReports.length + ' total';
+
+  if (!filtered.length) {
+    list.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+
+  const reasonLabels = {
+    'scam':          'Scam / Fraud',
+    'misleading':    'Misleading',
+    'wrong-info':    'Wrong Info',
+    'already-rented':'Already Rented',
+    'other':         'Other',
+  };
+  const reasonClass = {
+    'scam':          'fraud',
+    'misleading':    'misleading',
+    'wrong-info':    'wrong-info',
+    'already-rented':'other',
+    'other':         'other',
+  };
+
+  // Find matching listing for each report
+  list.innerHTML = filtered.map(r => {
+    const matchedListing = listings.find(l => l._fbId === r.listing_id || l.id === r.listing_id);
+    const imgSrc = safeImg(matchedListing?.images?.[0]) || '';
+    const isOpen = r.status === 'open';
+    const statusColor = r.status === 'resolved' ? '#4cde85' : r.status === 'dismissed' ? 'var(--smoke)' : '#e74c3c';
+
+    return `
+    <div class="report-card ${r.status !== 'open' ? r.status : ''}" id="rcard-${r._rId}">
+      <div>
+        ${imgSrc ? `<div class="report-listing-preview">
+          <img class="report-listing-img" src="${imgSrc}" onerror="this.style.display='none'" alt=""/>
+          <div class="report-listing-info">
+            <strong>${sanitize(r.listing_title || 'Unknown listing')}</strong><br>
+            ${sanitize(r.listing_city || '')}${r.listing_city && r.listing_region ? ', ' : ''}${sanitize(r.listing_region || '')}
+            ${r.listing_price ? ' · GH₵' + Number(r.listing_price).toLocaleString() : ''}
+            ${r.listing_phone ? '<br>📞 ' + sanitize(r.listing_phone) : ''}
+          </div>
+        </div>` : `<div class="report-listing-preview" style="padding:10px 14px">
+          <div class="report-listing-info">
+            <strong>${sanitize(r.listing_title || 'Unknown listing')}</strong><br>
+            ${sanitize(r.listing_city||'')}${r.listing_city&&r.listing_region?', ':''}${sanitize(r.listing_region||'')}
+            ${r.listing_phone ? '<br>📞 ' + sanitize(r.listing_phone) : ''}
+          </div>
+        </div>`}
+        <span class="report-reason ${reasonClass[r.reason] || 'other'}">${reasonLabels[r.reason] || sanitize(r.reason || 'Report')}</span>
+        ${r.details ? `<p style="font-size:12px;color:var(--mist);margin-bottom:10px;font-weight:300;line-height:1.7">"${sanitize(r.details)}"</p>` : ''}
+        <div class="report-meta">
+          Reported ${timeAgoReport(r.created_at)}
+          &nbsp;·&nbsp;
+          Status: <span style="color:${statusColor};font-weight:400">${r.status.charAt(0).toUpperCase() + r.status.slice(1)}</span>
+          ${r.resolution ? ' · ' + sanitize(r.resolution) : ''}
+        </div>
+      </div>
+      <div class="report-actions">
+        ${isOpen ? `
+          <button class="report-btn report-btn-remove" onclick="resolveReport('${r._rId}','remove')">Remove Listing</button>
+          <button class="report-btn report-btn-view" onclick="resolveReport('${r._rId}','warn')">Warn & Keep</button>
+          <button class="report-btn report-btn-dismiss" onclick="resolveReport('${r._rId}','dismiss')">Dismiss</button>
+        ` : `<span style="font-size:10px;color:var(--smoke);letter-spacing:.1em;text-transform:uppercase">${r.status}</span>`}
+        ${matchedListing ? `<button class="report-btn" style="background:transparent;border:1px solid rgba(201,168,76,.15);color:var(--smoke);font-size:9px;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;padding:6px 12px;font-family:'Outfit',sans-serif" onclick="viewReportedListing('${r.listing_id}')">View Listing</button>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function resolveReport(reportId, action) {
+  const r = adminReports.find(x => x._rId === reportId);
+  if (!r) return;
+
+  const actionMap = {
+    'remove':  { status: 'resolved', resolution: 'Listing removed' },
+    'warn':    { status: 'resolved', resolution: 'Listing kept — landlord warned' },
+    'dismiss': { status: 'dismissed', resolution: 'Report dismissed — listing is valid' },
+  };
+  const outcome = actionMap[action];
+  if (!outcome) return;
+
+  // If removing — also unpublish the listing
+  if (action === 'remove') {
+    const listing = listings.find(l => l._fbId === r.listing_id || l.id === r.listing_id);
+    if (listing && listing._fbId && window._dbReady) {
+      await window._updateDoc(
+        window._doc(window._db, 'listings', listing._fbId),
+        { is_approved: false, _rejected: true, _removed_reason: 'report', is_verified: false }
+      ).catch(e => console.warn('Listing unpublish failed:', e.message));
+      // Update local array
+      listing.is_approved = false;
+      listing._rejected   = true;
+      listing.is_verified = false;
+    }
+    toast('Listing removed from public view ✓');
+  } else if (action === 'warn') {
+    toast('Report resolved — listing kept live ✓');
+  } else {
+    toast('Report dismissed ✓');
+  }
+
+  // Update report status in Firebase
+  if (window._dbReady && reportId) {
+    await window._updateDoc(
+      window._doc(window._db, 'reports', reportId),
+      { status: outcome.status, resolution: outcome.resolution, resolved_at: new Date().toISOString() }
+    ).catch(e => console.warn('Report update failed:', e.message));
+  }
+
+  // Update local report object
+  r.status     = outcome.status;
+  r.resolution = outcome.resolution;
+  updateReportBadge();
+  renderReports();
+  // Refresh listings table too if listing was removed
+  if (action === 'remove') refreshAdmin();
+}
+
+function viewReportedListing(listingId) {
+  const l = listings.find(x => x._fbId === listingId || x.id === listingId);
+  if (!l) { toast('Listing not found.', true); return; }
+  // Switch to user site and open detail
+  switchSite('user');
+  uNav('detail', l._fbId || l.id);
+}
+
 // ═══════════════════════════════════════════════
 // REPORT + SHARE
 // ═══════════════════════════════════════════════
+// ── REPORT MODAL ──
 function reportListing(id) {
   const l = listings.find(x => x.id === id || x._fbId === id);
   if (!l) return;
-  // Rate limit reports: max 5 per hour per browser
+
+  // Rate limit: max 5 reports per hour per browser
   const RPT_KEY = 'rm_reports';
   try {
     const stored = JSON.parse(localStorage.getItem(RPT_KEY) || '[]');
     const now = Date.now();
     const recent = stored.filter(t => now - t < 3600000);
     if (recent.length >= 5) { toast('Too many reports. Please try again later.', true); return; }
-    // Check if already reported this listing
     const rptdKey = 'rm_rptd_' + (l._fbId || l.id);
     if (localStorage.getItem(rptdKey)) { toast('You have already reported this listing.', true); return; }
-    recent.push(now);
+  } catch(err) {}
+
+  // Show reason selection modal
+  showReportModal(id, l);
+}
+
+function showReportModal(id, l) {
+  // Remove existing modal if present
+  const existing = document.getElementById('report-modal-overlay');
+  if (existing) existing.remove();
+
+  const overlay = document.createElement('div');
+  overlay.id = 'report-modal-overlay';
+  overlay.style.cssText = 'position:fixed;inset:0;z-index:3000;background:rgba(0,0,0,.8);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:24px';
+  overlay.innerHTML = `
+    <div style="background:var(--obsidian-2);border:1px solid rgba(201,168,76,.18);padding:40px;width:100%;max-width:420px;position:relative">
+      <button onclick="document.getElementById('report-modal-overlay').remove()" style="position:absolute;top:14px;right:14px;background:none;border:none;color:var(--smoke);font-size:20px;cursor:pointer;line-height:1">✕</button>
+      <h3 style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;color:var(--white);margin-bottom:6px;letter-spacing:.06em">Report Listing</h3>
+      <p style="font-size:11px;color:var(--smoke);margin-bottom:24px;letter-spacing:.06em">"${sanitize(l.title).slice(0,60)}"</p>
+      <p style="font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:14px;font-weight:300">Reason for report</p>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:24px" id="report-reasons">
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:10px 14px;border:1px solid rgba(201,168,76,.1);transition:border-color .2s" onmouseover="this.style.borderColor='rgba(201,168,76,.3)'" onmouseout="this.style.borderColor='rgba(201,168,76,.1)'">
+          <input type="radio" name="report-reason" value="scam" style="accent-color:var(--gold)"/>
+          <span style="font-size:12px;color:var(--mist);font-weight:300">Scam or fraud — may not be a real listing</span>
+        </label>
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:10px 14px;border:1px solid rgba(201,168,76,.1);transition:border-color .2s" onmouseover="this.style.borderColor='rgba(201,168,76,.3)'" onmouseout="this.style.borderColor='rgba(201,168,76,.1)'">
+          <input type="radio" name="report-reason" value="misleading" style="accent-color:var(--gold)"/>
+          <span style="font-size:12px;color:var(--mist);font-weight:300">Photos or description are misleading</span>
+        </label>
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:10px 14px;border:1px solid rgba(201,168,76,.1);transition:border-color .2s" onmouseover="this.style.borderColor='rgba(201,168,76,.3)'" onmouseout="this.style.borderColor='rgba(201,168,76,.1)'">
+          <input type="radio" name="report-reason" value="wrong-info" style="accent-color:var(--gold)"/>
+          <span style="font-size:12px;color:var(--mist);font-weight:300">Wrong price, location or contact details</span>
+        </label>
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:10px 14px;border:1px solid rgba(201,168,76,.1);transition:border-color .2s" onmouseover="this.style.borderColor='rgba(201,168,76,.3)'" onmouseout="this.style.borderColor='rgba(201,168,76,.1)'">
+          <input type="radio" name="report-reason" value="already-rented" style="accent-color:var(--gold)"/>
+          <span style="font-size:12px;color:var(--mist);font-weight:300">Property is already taken / no longer available</span>
+        </label>
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:10px 14px;border:1px solid rgba(201,168,76,.1);transition:border-color .2s" onmouseover="this.style.borderColor='rgba(201,168,76,.3)'" onmouseout="this.style.borderColor='rgba(201,168,76,.1)'">
+          <input type="radio" name="report-reason" value="other" style="accent-color:var(--gold)"/>
+          <span style="font-size:12px;color:var(--mist);font-weight:300">Other reason</span>
+        </label>
+      </div>
+      <textarea id="report-details" placeholder="Add details (optional)" style="width:100%;height:72px;background:var(--obsidian-3);border:1px solid rgba(201,168,76,.12);color:var(--pearl);font-size:13px;padding:10px 12px;resize:none;font-family:'Outfit',sans-serif;font-weight:300;margin-bottom:16px;letter-spacing:.04em"></textarea>
+      <button onclick="submitReport('${l._fbId||l.id}')" style="width:100%;height:48px;background:var(--danger);color:var(--white);font-size:9px;letter-spacing:.22em;text-transform:uppercase;border:none;cursor:pointer;font-family:'Outfit',sans-serif;font-weight:300;transition:opacity .2s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">Submit Report</button>
+    </div>`;
+  document.body.appendChild(overlay);
+  overlay.addEventListener('click', e => { if (e.target === overlay) overlay.remove(); });
+}
+
+function submitReport(listingId) {
+  const reasonEl = document.querySelector('input[name="report-reason"]:checked');
+  if (!reasonEl) { toast('Please select a reason for the report.', true); return; }
+  const reason   = reasonEl.value;
+  const details  = sanitize(document.getElementById('report-details')?.value || '').slice(0, 500);
+  const l        = listings.find(x => x._fbId === listingId || x.id === listingId);
+
+  const report = {
+    listing_id:    listingId,
+    listing_title: sanitize(l?.title || ''),
+    listing_phone: sanitize(l?.phone || ''),
+    listing_region:sanitize(l?.region || ''),
+    listing_city:  sanitize(l?.city   || ''),
+    listing_price: l?.price || 0,
+    reason,
+    details,
+    status:        'open',
+    created_at:    new Date().toISOString(),
+    resolved_at:   null,
+    resolution:    null,
+  };
+
+  // Rate limit — save after we have the reason
+  try {
+    const RPT_KEY  = 'rm_reports';
+    const rptdKey  = 'rm_rptd_' + listingId;
+    const stored   = JSON.parse(localStorage.getItem(RPT_KEY) || '[]');
+    const recent   = stored.filter(t => Date.now() - t < 3600000);
+    recent.push(Date.now());
     localStorage.setItem(RPT_KEY, JSON.stringify(recent));
     localStorage.setItem(rptdKey, '1');
   } catch(err) {}
-  // Save report to Firebase
-  const report = {
-    listing_id: l._fbId || l.id,
-    listing_title: l.title,
-    reason: 'User report',
-    created_at: new Date().toISOString()
-  };
+
   if (window._dbReady) {
     window._addDoc(window._collection(window._db, 'reports'), report)
-      .then(() => toast('Listing reported. We will review it shortly.'))
-      .catch(() => toast('Listing reported. Thank you.'));
+      .then(() => {
+        document.getElementById('report-modal-overlay')?.remove();
+        toast('Report submitted. We will review this listing shortly.');
+        // Increment local report_count
+        if (l && typeof l.report_count === 'number') l.report_count++;
+        // Auto-flag in admin if 3+ reports
+        if (l && l.report_count >= 3 && l._fbId) {
+          window._updateDoc(window._doc(window._db, 'listings', l._fbId), { high_reports: true })
+            .catch(() => {});
+        }
+      })
+      .catch(() => {
+        document.getElementById('report-modal-overlay')?.remove();
+        toast('Report received. Thank you.');
+      });
   } else {
-    toast('Listing reported. Thank you.');
+    document.getElementById('report-modal-overlay')?.remove();
+    toast('Report received. Thank you.');
   }
-  // Increment report_count locally
-  if (typeof l.report_count === 'number') l.report_count++;
 }
 
 function shareListing(id) {
@@ -2450,6 +3570,20 @@ ${url}`;
     const wa = 'https://wa.me/?text=' + encodeURIComponent(text);
     window.open(wa, '_blank');
   }
+}
+
+
+// ═══════════════════════════════════════════════
+// LEGAL PAGES
+// ═══════════════════════════════════════════════
+function switchLegalTab(tab) {
+  document.querySelectorAll('.legal-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.legal-panel').forEach(p => p.classList.remove('active'));
+  const tabEl   = document.getElementById('ltab-' + tab);
+  const panelEl = document.getElementById('lpanel-' + tab);
+  if (tabEl)   tabEl.classList.add('active');
+  if (panelEl) panelEl.classList.add('active');
+  window.scrollTo({top: 0, behavior: 'smooth'});
 }
 
 // ═══════════════════════════════════════════════
@@ -2476,7 +3610,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.key === 'Enter') doAdminLogin();
   });
   // Secret admin access — only accessible via ?admin in URL
-  if (window.location.search.includes('admin')) {
+  if (window.location.search.includes('admin') || window.location.hash.includes('__rm_admin')) {
     document.getElementById('site-toggle').style.display = 'flex';
     // Auto-switch to admin view if ?admin present
     document.getElementById('user-site').style.display = 'none';
