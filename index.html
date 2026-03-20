@@ -1321,7 +1321,7 @@ input,select,textarea{font-family:'Outfit',sans-serif}
 <!-- Firebase -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
-import { getFirestore, collection, addDoc, setDoc, doc, updateDoc, deleteDoc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, setDoc, doc, updateDoc, deleteDoc, getDoc, getDocs, onSnapshot } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-storage.js";
 
@@ -1347,6 +1347,7 @@ window._collection = collection;
 window._addDoc     = addDoc;
 window._doc        = doc;
 window._getDoc     = getDoc;
+window._getDocs    = getDocs;
 window._updateDoc  = updateDoc;
 window._deleteDoc  = deleteDoc;
 window._ref        = ref;
@@ -1391,23 +1392,34 @@ onAuthStateChanged(auth, async (user) => {
 function startRealtimeListener() {
   onSnapshot(collection(db, "listings"), (snapshot) => {
     const fbIds = new Set();
+    const arr = window.listings;
+
     snapshot.forEach(d => {
       fbIds.add(d.id);
-      const existing = window.listings.find(l => l._fbId === d.id);
-      if (existing) {
-        Object.assign(existing, d.data(), { _fbId: d.id });
+      const idx = arr.findIndex(l => l._fbId === d.id);
+      if (idx > -1) {
+        // Update in place — preserve the same object reference
+        Object.assign(arr[idx], d.data(), { _fbId: d.id });
       } else {
-        window.listings.push({ ...d.data(), _fbId: d.id });
+        arr.push({ ...d.data(), _fbId: d.id });
       }
     });
-    window.listings = window.listings.filter(l => !l._fbId || fbIds.has(l._fbId));
+
+    // Remove deleted Firebase listings — splice in place (don't replace array)
+    for (let i = arr.length - 1; i >= 0; i--) {
+      if (arr[i]._fbId && !fbIds.has(arr[i]._fbId)) {
+        arr.splice(i, 1);
+      }
+    }
+
     console.log("Firebase sync: " + snapshot.size + " listings ✓");
+
     if (typeof renderFeatured === "function") renderFeatured();
     if (typeof renderListings === "function" &&
         document.getElementById("view-listings")?.classList.contains("active")) {
       renderListings();
     }
-    if (typeof refreshAdmin === "function" && window.adminIn) refreshAdmin();
+    if (typeof refreshAdmin === "function" && (window.adminIn || adminIn)) refreshAdmin();
     if (typeof renderDashboard === "function" &&
         document.getElementById("view-dashboard")?.classList.contains("active")) {
       renderDashboard();
@@ -1905,14 +1917,37 @@ function handleSubmit(e) {
 // ═══════════════════════════════════════════════
 // ADMIN
 // ═══════════════════════════════════════════════
+async function loadAllListingsForAdmin() {
+  if (!window._dbReady) { refreshAdmin(); return; }
+  try {
+    const snap = await window._getDocs(
+      window._collection(window._db, 'listings')
+    );
+    snap.forEach(d => {
+      const idx = listings.findIndex(l => l._fbId === d.id);
+      if (idx > -1) {
+        Object.assign(listings[idx], d.data(), { _fbId: d.id });
+      } else {
+        listings.push({ ...d.data(), _fbId: d.id });
+      }
+    });
+    console.log('Admin loaded ' + snap.size + ' listings from Firebase ✓');
+  } catch(e) {
+    console.warn('Admin load error:', e.message);
+  }
+  refreshAdmin();
+}
+
 function doAdminLogin() {
   const pw = document.getElementById('adm-pw').value;
   if (pw === ADMIN_PW) {
     adminIn = true;
+    window.adminIn = true;
     document.getElementById('admin-login-wrap').style.display = 'none';
     document.getElementById('admin-panel-wrap').style.display = 'block';
     document.getElementById('admin-bar-right').style.display = 'flex';
-    refreshAdmin();
+    // Force-load all listings from Firebase fresh on admin login
+    loadAllListingsForAdmin();
     toast('Welcome to Admin Console ✓');
   } else {
     toast('Incorrect password.',true);
@@ -1921,6 +1956,7 @@ function doAdminLogin() {
 }
 function adminLogout() {
   adminIn = false;
+  window.adminIn = false;
   document.getElementById('admin-login-wrap').style.display = 'flex';
   document.getElementById('admin-panel-wrap').style.display = 'none';
   document.getElementById('admin-bar-right').style.display = 'none';
