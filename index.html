@@ -2759,9 +2759,22 @@ function doAdminLogin() {
     toast('Login error. Please try again.', true);
   });
 }
+// Centralised panel activation — called on login AND on session restore
+function activateAdminPanel() {
+  document.getElementById('admin-login-wrap').style.display = 'none';
+  document.getElementById('admin-panel-wrap').style.display = 'block';
+  document.getElementById('admin-bar-right').style.display = 'flex';
+  loadAllListingsForAdmin();
+  resetAdminSession();
+  setTimeout(loadReports, 1200);
+}
+
 function adminLogout() {
   adminIn = false;
   window.adminIn = false;
+  // Clear session so refresh requires login
+  try { sessionStorage.removeItem('rm_admin_session'); } catch(e) {}
+  clearTimeout(adminSessionTimer);
   document.getElementById('admin-login-wrap').style.display = 'flex';
   document.getElementById('admin-panel-wrap').style.display = 'none';
   document.getElementById('admin-bar-right').style.display = 'none';
@@ -3253,17 +3266,42 @@ let reportsFilter = 'all';
 
 async function loadReports() {
   if (!window._dbReady) return;
+
+  // Try to load from Firestore reports collection
+  // NOTE: Firestore rules must allow admin to read reports
+  // If rules block this, we fall back to showing flagged listings
   try {
     const snap = await window._getDocs(window._collection(window._db, 'reports'));
     adminReports = [];
     snap.forEach(d => adminReports.push({ ...d.data(), _rId: d.id }));
-    // Sort newest first
     adminReports.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-    updateReportBadge();
-    renderReports();
+    console.log('Loaded ' + adminReports.length + ' reports ✓');
   } catch(e) {
-    console.warn('Reports load error:', e.message);
+    console.warn('Reports collection blocked by rules — using listing flags instead:', e.message);
+    // Fallback: build synthetic reports from listings with report_count > 0
+    adminReports = listings
+      .filter(l => l.report_count > 0 || l.high_reports)
+      .map(l => ({
+        _rId:           l._fbId || l.id,
+        listing_id:     l._fbId || l.id,
+        listing_title:  l.title,
+        listing_phone:  l.phone,
+        listing_region: l.region,
+        listing_city:   l.city,
+        listing_price:  l.price,
+        reason:         l.high_reports ? 'scam' : 'other',
+        details:        l.report_count + ' user report(s) on this listing',
+        status:         l._rejected ? 'resolved' : 'open',
+        created_at:     l.created_at || new Date().toISOString(),
+        _synthetic:     true,
+      }));
+    if (!adminReports.length) {
+      adminReports = [];
+    }
   }
+
+  updateReportBadge();
+  renderReports();
 }
 
 function updateReportBadge() {
@@ -3379,6 +3417,7 @@ function renderReports() {
 async function resolveReport(reportId, action) {
   const r = adminReports.find(x => x._rId === reportId);
   if (!r) return;
+  const isSynthetic = r._synthetic === true;
 
   const actionMap = {
     'remove':  { status: 'resolved', resolution: 'Listing removed' },
@@ -3408,8 +3447,8 @@ async function resolveReport(reportId, action) {
     toast('Report dismissed ✓');
   }
 
-  // Update report status in Firebase
-  if (window._dbReady && reportId) {
+  // Update report status in Firebase (skip for synthetic/fallback reports)
+  if (window._dbReady && reportId && !isSynthetic) {
     await window._updateDoc(
       window._doc(window._db, 'reports', reportId),
       { status: outcome.status, resolution: outcome.resolution, resolved_at: new Date().toISOString() }
@@ -3604,22 +3643,39 @@ function toast(msg, isErr) {
 document.addEventListener('DOMContentLoaded', () => {
   initDropdowns();
   setTimeout(renderFeatured, 600);
-  // Note: Firebase Auth must be enabled in Firebase Console
-  // Go to: Authentication → Sign-in method → Email/Password → Enable
   document.getElementById('adm-pw').addEventListener('keydown', e => {
     if (e.key === 'Enter') doAdminLogin();
   });
-  // Secret admin access — only accessible via ?admin in URL
-  if (window.location.search.includes('admin') || window.location.hash.includes('__rm_admin')) {
+
+  const isAdminUrl = window.location.search.includes('admin') ||
+                     window.location.hash.includes('__rm_admin');
+
+  if (isAdminUrl) {
     document.getElementById('site-toggle').style.display = 'flex';
-    // Auto-switch to admin view if ?admin present
     document.getElementById('user-site').style.display = 'none';
     document.getElementById('admin-site').style.display = 'block';
+
+    // ── RESTORE SESSION ON REFRESH ──
+    // If admin was previously logged in this browser session, restore it
+    // without requiring password re-entry
+    try {
+      const stored = sessionStorage.getItem('rm_admin_session');
+      if (stored && stored === ADMIN_PW_HASH) {
+        adminIn = true;
+        window.adminIn = true;
+        // Small delay so Firebase has time to initialise
+        setTimeout(() => {
+          activateAdminPanel();
+          toast('Session restored ✓');
+        }, 800);
+      }
+    } catch(e) {}
   }
-  // Also support switching back to user from admin
+
   window._showAdminToggle = function() {
     document.getElementById('site-toggle').style.display = 'flex';
   };
+  if (typeof updateNotifBadge === 'function') updateNotifBadge();
 });
 </script>
 </body>
